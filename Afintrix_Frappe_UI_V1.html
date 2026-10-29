@@ -7173,6 +7173,21 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
 }
 .afx-sync[data-state="working"] svg { animation: afx-spin 0.75s linear infinite !important; }
 
+/* Charts keep their load animation (lines draw in, bars grow, rings fill), unless the
+   operating system asks for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .afx-microbar-fill { animation: afx-grow-x 0.75s var(--ease-out) both !important; }
+  .afx-stackbar-seg, .afx-cellbar, .afx-barrow-fill { animation: afx-grow-x 0.7s var(--ease-out) both !important; }
+  .afx-ring-value { animation: afx-ring-in 1.6s var(--ease-out) both !important; }
+  .afx-spark-line { animation: afx-draw 1.1s var(--ease-out) both !important; }
+  .afx-wchart .series { animation: afx-wreveal 1.1s cubic-bezier(.22, .61, .36, 1) 0.15s both !important; }
+  .afx-wchart rect { transform-box: fill-box; transform-origin: 50% 100%; animation: afx-wgrow 1s cubic-bezier(.22, .61, .36, 1) calc(150ms + var(--d, 0ms)) both !important; }
+  .afx-wdonut path { animation: afx-wfade 0.7s ease-out calc(150ms + var(--d, 0ms)) both !important; }
+}
+@keyframes afx-wreveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes afx-wgrow { from { transform: scaleY(0); opacity: 0; } to { transform: scaleY(1); opacity: 1; } }
+@keyframes afx-wfade { from { opacity: 0; } to { opacity: 1; } }
+
 [data-reveal], [data-reveal].is-revealed, .animate-enter, [class*="animate-delay"] { opacity: 1 !important; transform: none !important; }
 
 .btn, .btn:hover, .btn:active, .btn:not(:disabled):hover, .btn:not(:disabled):active, .btn:not(:disabled):hover svg,
@@ -7207,6 +7222,40 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
 }
 .afx-number-card:hover { border-left-color: #1E39D6 !important; }
 .afx-module-tile:hover { background: var(--afx-surface); }
+
+/* Sortable headers: the arrow takes no width and shows on hover or on the sorted column. */
+table.saas-table thead th .sort-arrow { position: absolute; margin-left: 4px; opacity: 0; }
+table.saas-table thead th.sortable:hover .sort-arrow { opacity: .45; }
+table.saas-table thead th.asc .sort-arrow, table.saas-table thead th.desc .sort-arrow { opacity: 1; color: var(--afx-active); }
+
+/* Print view: the document on an A4 sheet. */
+.afx-print-canvas { background: var(--afx-canvas); }
+.afx-print-page { max-width: 794px; min-height: 1000px; margin: 0 auto; padding: 56px 64px; background: #fff; color: #0E1340; border: 1px solid var(--afx-line); }
+.afx-print-page h2 { font-family: var(--f-head); font-size: 22px; margin: 0 0 4px; color: #121CA4; }
+.afx-print-name { color: #70788F; margin: 0 0 24px; }
+.afx-print-lh { border-bottom: 2px solid #D5AA55; padding-bottom: 12px; margin-bottom: 24px; font-family: var(--f-head); font-size: 16px; }
+.afx-print-stamp { display: inline-block; border: 2px solid #C0392B; color: #C0392B; padding: 2px 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin: 0 0 20px; }
+.afx-print-stamp.is-draft { border-color: #70788F; color: #70788F; }
+.afx-print-fields { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 8px 24px; margin: 0; font-size: 13px; }
+.afx-print-fields dt { color: #70788F; }
+.afx-print-fields dd { margin: 0; }
+@media print { .app-sidebar, .afx-sidebar, .afx-header, .page-title-banner { display: none !important; } .afx-print-page { border: 0; padding: 0; } }
+@media (max-width: 640px) { .afx-print-page { padding: 28px 20px; } .afx-print-fields { grid-template-columns: 1fr; } }
+
+/* Filter button with active filters, report grouping rows, calendar events, liked rows. */
+.afx-filter-tools .afx-is-on, .afx-report-tools .afx-is-on { border-color: var(--afx-active-line); background: var(--afx-active-tint); color: var(--afx-active); }
+.afx-btn-group { display: inline-flex; gap: 4px; }
+.afx-group-row td { background: var(--afx-head-bg); font-size: 12px; }
+.afx-cal-event { display: block; margin-top: 4px; padding: 2px 6px; font-size: 11px; line-height: 1.4; background: var(--afx-active-tint); color: var(--afx-active); border-left: 2px solid var(--afx-fill); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.afx-cal-day { position: relative; }
+.afx-cal-add { position: absolute; top: 4px; right: 4px; opacity: 0; color: var(--afx-muted); }
+.afx-cal-day:hover .afx-cal-add, .afx-cal-add:focus-visible { opacity: 1; }
+.afx-cal-grid.is-week .afx-cal-day { min-height: 220px; }
+.afx-cal-grid.is-day { grid-template-columns: 1fr; }
+.afx-cal-grid.is-day .afx-cal-day { min-height: 320px; }
+.afx-kanban-col.is-collapsed { flex: 0 0 56px; min-width: 56px; }
+.afx-kanban-col.is-collapsed .afx-kanban-cards, .afx-kanban-col.is-collapsed header b, .afx-kanban-col.is-collapsed header .afx-pill { display: none; }
+.afx-like.is-liked, .afx-like.is-liked svg { color: #C0392B; fill: currentColor; }
 </style>
 <style data-file="css/afx-auth.css">
 /* AFX sign-in — the shared Afintrix login, identical to Listmonk / IRIS / Unicis / HumHub / Moodle
@@ -7603,11 +7652,14 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
 <script data-file="js/afx/motion.js">
 /* AFX motion policy: like Listmonk, IRIS and Unicis, the interface uses no decorative motion.
    Loaded in <head> so it runs before any other script: code that asks the browser for
-   prefers-reduced-motion (number count-ups, scroll reveals, drawn charts) is told "reduce".
-   Theme app equivalent: not needed — the theme simply adds no animations. */
+   prefers-reduced-motion (number count-ups, scroll reveals) is told "reduce". Charts are the
+   exception: they still draw in on load, unless the operating system asks for reduced motion
+   (afxChartsReduceMotion reads the real setting).
+   Theme app equivalent: keep the chart load animations, add no other motion. */
 (function () {
   'use strict';
   const native = window.matchMedia ? window.matchMedia.bind(window) : null;
+  window.afxChartsReduceMotion = () => (native ? native('(prefers-reduced-motion: reduce)').matches : false);
   window.matchMedia = function (query) {
     const q = String(query);
     if (!/prefers-reduced-motion/.test(q)) return native ? native(q) : { matches: false, media: q, addListener() {}, removeListener() {} };
@@ -8083,7 +8135,7 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
           <header class="afx-card-head">
             <div>
               <h2>Institutional Cash &amp; Bank Liquidity</h2>
-              <p class="afx-card-sub">12-month trajectory &middot; Principal Operating Account (Dhaka AD)</p>
+              <p class="afx-card-sub"><span data-liquidity-span>12-month trajectory</span> &middot; Principal Operating Account (Dhaka AD)</p>
             </div>
             <span class="status-badge red">Overdraft Facility Active</span>
           </header>
@@ -8094,7 +8146,7 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
                 <span style="width:9px;height:9px;background:var(--chart-1);border-radius:3px"></span>
                 <span>Principal Operating Account (Dhaka AD)</span>
               </span>
-              <span style="color:var(--neg);font-weight:700">
+              <span style="color:var(--neg);font-weight:700" data-liquidity-closing>
                 Closing Overdraft Position:
                 <span class="num">($117,854.00)</span>
               </span>
@@ -9057,7 +9109,7 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
           <div>
             <h1>Create Purchase Order</h1>
             <div class="page-caption">
-              <span>Series: MAT-PO-.YYYY.-</span>
+              <span>Series: PUR-ORD-.YYYY.-</span>
               <span>&middot;</span>
               <span class="status-badge yellow">Uncommitted Draft</span>
             </div>
@@ -9118,8 +9170,7 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
                   <div class="form-group">
                     <label class="form-label-deck">Series Prefix <span class="req">*</span></label>
                     <select class="form-input">
-                      <option>MAT-PO-.YYYY.-</option>
-                      <option>PUR-ORD-.####</option>
+                      <option>PUR-ORD-.YYYY.-</option>
                     </select>
                   </div>
                   <div class="form-group">
@@ -9162,7 +9213,7 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
                   <span class="status-badge blue">3 SKUs Specified</span>
                 </div>
                 <div style="display:flex;gap:8px">
-                  <button class="btn btn-secondary btn-sm" data-toast="Item Line Appended|A blank SKU row was appended.|info">
+                  <button class="btn btn-secondary btn-sm">
                     ＋ Add Item
                   </button>
                   <button class="btn btn-ghost btn-sm">Upload Batch</button>
@@ -16373,20 +16424,6 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
           if (action === "exportAudit") toast("Audit Pack Generated", "Trial Balance and General Ledger exporting as XLSX.", "success");
         }
       });
-      document.querySelectorAll(".page-nav-tabs, .tabs").forEach((bar) => {
-        bar.addEventListener("click", (e) => {
-          const btn = e.target.closest("button");
-          if (!btn) return;
-          bar.querySelectorAll("button").forEach((b) => b.classList.remove("active", "on"));
-          btn.classList.add("active", "on");
-          const panel = btn.dataset.tab;
-          if (panel) {
-            document.querySelectorAll("[data-panel]").forEach((p) => {
-              p.hidden = p.dataset.panel !== panel;
-            });
-          }
-        });
-      });
       document.addEventListener("click", (e) => {
         const cbx = e.target.closest(".saas-checkbox, .cbx");
         if (cbx) {
@@ -16484,8 +16521,6 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
           closeAll();
         }
       });
-      initSorting();
-      initFilter();
     }
     function positionNavRail() {
       const nav = document.querySelector(".sidebar-nav-scroll");
@@ -16877,7 +16912,7 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
 
   // js/charts.js
   var NS = "http://www.w3.org/2000/svg";
-  var reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var reduceMotion = () => window.afxChartsReduceMotion();
   function el(name, attrs = {}) {
     const node = document.createElementNS(NS, name);
     for (const [k, v] of Object.entries(attrs)) {
@@ -17217,7 +17252,7 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
               { transform: "scaleY(0)", opacity: 0 },
               { transform: "scaleY(1)", opacity: 1 }
             ],
-            { duration: 550, delay: i * 45, easing: "cubic-bezier(.16,1,.3,1)", fill: "none" }
+            { duration: 1000, delay: 150 + i * 90, easing: "cubic-bezier(.22,.61,.36,1)", fill: "backwards" }
           );
         });
       }
@@ -17327,10 +17362,10 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
       if (!reduceMotion()) {
         arcs.forEach((a, i) => {
           a.path.animate([{ opacity: 0 }, { opacity: 1 }], {
-            duration: 400,
-            delay: i * 70,
+            duration: 700,
+            delay: 150 + i * 220,
             easing: "ease-out",
-            fill: "none"
+            fill: "backwards"
           });
         });
       }
@@ -17877,12 +17912,53 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
       </div>`;
     }).join("");
   }
-  function renderLiquidityStats() {
+  function liquidityInScope(scopeId) {
+    const scope = PERIOD_SCOPES.find((s) => s.id === scopeId) || PERIOD_SCOPES[0];
+    if (!scope.months) return LIQUIDITY.points;
+    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const key = (label) => {
+      const [m, yy] = label.split(" ");
+      return `20${yy}-${String(MONTHS.indexOf(m) + 1).padStart(2, "0")}`;
+    };
+    return LIQUIDITY.points.filter((p) => scope.months.includes(key(p.label)));
+  }
+  function liquidityOpening(scopeId) {
+    const pts = liquidityInScope(scopeId);
+    const i = pts.length ? LIQUIDITY.points.indexOf(pts[0]) : -1;
+    return i > 0 ? LIQUIDITY.points[i - 1] : null;
+  }
+  function liquidityChartPoints(scopeId) {
+    const pts = liquidityInScope(scopeId);
+    const opening = liquidityOpening(scopeId);
+    return opening && pts !== LIQUIDITY.points ? [opening, ...pts] : pts;
+  }
+  function renderLiquidityCaption(scopeId) {
+    const pts = liquidityInScope(scopeId);
+    const opening = pts !== LIQUIDITY.points ? liquidityOpening(scopeId) : null;
+    const span = $("[data-liquidity-span]");
+    const closing = $("[data-liquidity-closing]");
+    if (span) {
+      const range = pts.length === 1 ? pts[0].label : `${pts[0] ? pts[0].label : ""} to ${pts.length ? pts[pts.length - 1].label : ""}`;
+      span.textContent = !pts.length ? "No bank postings in this period"
+        : opening ? `${range} · from the ${opening.label} close`
+        : `${pts.length}-month trajectory · ${range}`;
+    }
+    if (closing) {
+      const last = pts[pts.length - 1];
+      closing.hidden = !last;
+      if (last) {
+        closing.style.color = last.value < 0 ? "var(--neg)" : "var(--pos)";
+        closing.innerHTML = `${last.value < 0 ? "Closing Overdraft Position:" : "Closing Position:"} <span class="num">${money(last.value)}</span>`;
+      }
+    }
+  }
+  function renderLiquidityStats(scopeId) {
     const host = $("[data-liquidity-stats]");
     if (!host) return;
-    const pts = LIQUIDITY.points;
-    if (!pts.length) return;
-    const opening = pts[0];
+    const pts = liquidityInScope(scopeId);
+    if (!pts.length) { host.innerHTML = ""; return; }
+    const prior = pts !== LIQUIDITY.points ? liquidityOpening(scopeId) : null;
+    const opening = prior ? { value: prior.value, label: `${prior.label} close` } : pts[0];
     const closing = pts[pts.length - 1];
     const peak = pts.reduce((best, p) => p.value > best.value ? p : best, pts[0]);
     const deficitMonths = pts.filter((p) => p.value < 0);
@@ -17983,7 +18059,7 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
       moveIndicator(indicator, btn);
       if (focus) btn.focus();
       if (pushUrl) {
-        history.replaceState(null, "", `#${btn.dataset.view}`);
+        history.replaceState(null, "", `${location.hash.split("?")[0] || "#"}?view=${btn.dataset.view}`);
       }
       if (onShow) onShow(btn.dataset.view);
     };
@@ -18006,7 +18082,8 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
       }
     });
     const fromHash = () => {
-      const view = location.hash.replace("#", "");
+      const m = /[?&]view=([^&]+)/.exec(location.hash);
+      const view = m ? decodeURIComponent(m[1]) : location.hash.replace("#", "");
       return view ? tabs.querySelector(`button[data-view="${CSS.escape(view)}"]`) : null;
     };
     const initial = fromHash() || tabs.querySelector('button[aria-selected="true"]') || tabs.querySelector("button");
@@ -18051,6 +18128,9 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
       scopeId = id;
       renderPosition(positionHost, derivePosition(id));
       if (trajectory) trajectory.setScope(id);
+      renderLiquidityStats(id);
+      renderLiquidityCaption(id);
+      if (liquidity) liquidity.update({ points: liquidityChartPoints(id) });
     };
     if (instrumentHost) renderInstruments(instrumentHost);
     renderTriage();
@@ -18058,17 +18138,18 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
     setupAgeing();
     renderAgeingMatrix();
     renderAgeingDistribution();
-    renderLiquidityStats();
     scopeId = setupPeriodScope(paint) || "fy";
+    renderLiquidityStats(scopeId);
+    renderLiquidityCaption(scopeId);
     renderPosition(positionHost, derivePosition(scopeId));
     trajectory = setupTrajectory(scopeId);
-    let liquidity = null;
+    var liquidity = null;
     setupTabs((view) => {
       if (view === "cash" && !liquidity) {
         const host = $('[data-chart="liquidity"]');
         if (host) {
           liquidity = liquidityChart(host, { height: 260 });
-          liquidity.update({ points: LIQUIDITY.points });
+          liquidity.update({ points: liquidityChartPoints(scopeId) });
         }
       }
     });
@@ -18080,7 +18161,6 @@ code, kbd, pre, .afx-tb, .afx-debug, .afx-code textarea, .afx-code-gutter, .afx-
       renderPostings();
       renderAgeingMatrix();
       renderAgeingDistribution();
-      renderLiquidityStats();
       paint(scopeId);
       if (e.detail) e.detail.done = Promise.resolve();
     });
@@ -19048,13 +19128,13 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
   /* Designed screens that replace the generic view for a real route. */
   const BESPOKE = [
     { test: (p) => p === '', page: 'index' },
-    { test: (p) => p === 'desk/home', page: 'executive', crumb: ['Home'] },
-    { test: (p) => p === 'desk/accounting', page: 'overview', crumb: ['Accounting'] },
+    { test: (p) => p === 'desk/home', page: 'executive', crumb: ['Home'], key: 'Workspace|Home' },
+    { test: (p) => p === 'desk/accounting', page: 'overview', crumb: ['Accounting'], key: 'Workspace|Accounting' },
     { test: (p) => p === 'desk/query-report/Trial Balance', page: 'report', crumb: ['Financial Reports', 'Trial Balance'], key: 'Report|Trial Balance' },
     { test: (p) => p === 'desk/purchase-order', page: 'list', crumb: ['Buying', 'Purchase Order'], key: 'DocType|Purchase Order' },
     { test: (p) => /^desk\/purchase-order\/.+/.test(p) && !/\/view\//.test(p), page: 'form', crumb: ['Buying', 'Purchase Order', 'New'], key: 'DocType|Purchase Order' },
-    { test: (p) => /^desk\/employee\/.+/.test(p) && !/\/view\//.test(p), page: 'record', crumb: ['Tenure', 'Employee'], key: 'DocType|Employee' },
-    { test: (p) => /^desk\/leave-application\/.+/.test(p) && !/\/view\//.test(p), page: 'approval', crumb: ['Leaves', 'Leave Application'], key: 'DocType|Leave Application' },
+    { test: (p) => /^desk\/employee\/.+/.test(p) && !/\/view\//.test(p) && !/^desk\/employee\/new(-|$)/.test(p), page: 'record', crumb: ['Tenure', 'Employee'], key: 'DocType|Employee' },
+    { test: (p) => /^desk\/leave-application\/.+/.test(p) && !/\/view\//.test(p) && !/^desk\/leave-application\/new(-|$)/.test(p), page: 'approval', crumb: ['Leaves', 'Leave Application'], key: 'DocType|Leave Application' },
     { test: (p) => p === 'hrms' || p.startsWith('hrms/'), page: 'portal', crumb: ['Employee Portal'] },
   ];
 
@@ -19092,6 +19172,108 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     if (location.hash === h) route(); else if (replace) route(); else location.hash = h;
   }
 
+  /* Shells in the URL, as in Platform v16.54: every desk URL names the module sidebar ("shell")
+     it is shown in, /desk/<shell>/<route> — /desk/buying/purchase-order, /desk/accounts/accounting,
+     /desk/setup/home. A URL without one gets it written in (history.replaceState, like
+     router.write_shell_into_url). The shell is the one the URL names if it can show the route,
+     else the one on screen if it can, else the canonical one from boot.canonical_shell.
+     A shell is not written when the route already starts with it (/desk/buying) or when its
+     slug is also a DocType (Workflow): /desk/workflow/item would read back as a Workflow form.
+     Platform equivalent: router.js take_shell_from / write_shell_into_url, sidebar.js shell_for_route. */
+  const shellSlug = (name) => String(name).toLowerCase().replace(/&/g, ' and ').trim().replace(/\s+/g, '-');
+  let SHELLS = null;
+  function shells() {
+    if (!SHELLS) {
+      SHELLS = {};
+      Object.keys(AFX.data.sidebars || {}).forEach((s) => { SHELLS[shellSlug(s)] = s; });
+      delete SHELLS.private;
+    }
+    return SHELLS;
+  }
+  function namesSomething(seg) {
+    const d = AFX.data;
+    return !!seg && (!!d.workspaceBySlug[seg] || !!d.doctypeBySlug[seg] || ['query-report', 'dashboard-view', 'print', 'private'].includes(seg) || !!PAGES[seg] || (d.allowed_pages || []).includes(seg));
+  }
+  /* "desk/buying/purchase-order" → { path: "desk/purchase-order", shell: "Buying" }. */
+  function takeShell(path) {
+    const parts = path.split('/');
+    if (parts[0] !== 'desk' || parts.length < 3) return { path, shell: null };
+    const seg = parts[1];
+    if (!shells()[seg] || AFX.data.doctypeBySlug[seg] || !namesSomething(parts[2])) return { path, shell: null };
+    return { path: ['desk'].concat(parts.slice(2)).join('/'), shell: shells()[seg] };
+  }
+  function entityOf(r) {
+    if (!r.key) return null;
+    const i = r.key.indexOf('|');
+    return { kind: r.key.slice(0, i), name: r.key.slice(i + 1) };
+  }
+  function canonicalShell(e) {
+    const d = AFX.data;
+    if (e.kind === 'Workspace') return Object.keys(d.sidebars).find((k) => (d.sidebars[k].workspaces || []).includes(e.name)) || null;
+    return ((d.canonical || {})[e.kind] || {})[e.name] || null;
+  }
+  function shellCanShow(shell, e) {
+    const sb = AFX.data.sidebars;
+    if (!shell || !sb[shell]) return false;
+    if (sb[shell].items.some((it) => it.link_type === e.kind && it.link_to === e.name)) return true;
+    const c = canonicalShell(e);
+    return !!c && !!sb[c] && sb[c].app === sb[shell].app;
+  }
+  let shellOnScreen = null;
+  function shellFor(r, stated) {
+    const e = entityOf(r);
+    if (!e) return null;
+    if (e.kind === 'Workspace') return canonicalShell(e);
+    if (stated && shellCanShow(stated, e)) return stated;
+    if (shellOnScreen && shellCanShow(shellOnScreen, e)) return shellOnScreen;
+    return canonicalShell(e);
+  }
+  /* "#/desk/<rest>" with the shell written in front of <rest> (spelling of <rest> kept). */
+  function withShell(href, shell) {
+    if (!shell || !/^#\/desk\/./.test(href)) return href;
+    const slug = shellSlug(shell);
+    const qi = href.indexOf('?');
+    const rest = (qi >= 0 ? href.slice(0, qi) : href).slice('#/desk/'.length);
+    const qs = qi >= 0 ? href.slice(qi) : '';
+    const namesItself = rest === slug || rest.startsWith(slug + '/');
+    if (namesItself || AFX.data.doctypeBySlug[slug]) return href;
+    return '#/desk/' + slug + '/' + rest + qs;
+  }
+  function writeShell(r, stated) {
+    if (!r.shell) return;
+    const h = location.hash;
+    const qi = h.indexOf('?');
+    let rest = (qi >= 0 ? h.slice(0, qi) : h).replace(/^#\/?desk\/?/, '');
+    if (stated) rest = rest.split('/').slice(1).join('/');
+    const next = withShell('#/desk/' + rest + (qi >= 0 ? h.slice(qi) : ''), r.shell);
+    if (rest && next !== h) history.replaceState(history.state, '', next);
+  }
+
+  /* Older URL forms the platform still accepts and redirects (verified on v16.54):
+     /app/<route> → /desk/<route>, /desk/List/<DocType>[/<View>] → /desk/<doctype>[/view/<view>],
+     /desk/Form/<DocType>/<name> → /desk/<doctype>/<name>, /desk/Tree/<DocType> → /desk/<doctype>/view/tree. */
+  function oldForm(path) {
+    const p = path.split('/');
+    if (p[0] === 'app') return ['desk'].concat(p.slice(1)).join('/');
+    if (p[0] !== 'desk' || !p[1] || !p[2]) return null;
+    const dt = AFX.data.doctypes[p[2]] ? p[2] : null;
+    if (!dt) return null;
+    const s = AFX.slug(dt);
+    if (p[1] === 'List') return 'desk/' + s + (p[3] && p[3] !== 'List' ? '/view/' + p[3].toLowerCase() : '');
+    if (p[1] === 'Form') return 'desk/' + s + '/' + (p.slice(3).join('/') || 'new');
+    if (p[1] === 'Tree') return 'desk/' + s + '/view/tree';
+    return null;
+  }
+  /* A new document gets a temporary name, as on the platform: /desk/item/new → /desk/item/new-item-ksqzvtmblr. */
+  const tempName = (slug) => 'new-' + slug + '-' + Array.from({ length: 10 }, () => 'abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random() * 26)]).join('');
+  function rewriteHash(fn) {
+    const h = location.hash;
+    const qi = h.indexOf('?');
+    const pathPart = qi >= 0 ? h.slice(0, qi) : h;
+    const next = fn(pathPart, qi >= 0 ? h.slice(qi + 1) : '');
+    if (next && next !== h) history.replaceState(history.state, '', next);
+  }
+
   /* Resolve a path to a view descriptor (used by the router, the shell and the dev map). */
   function resolve(path, query) {
     const d = AFX.data;
@@ -19106,8 +19288,9 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     if (parts.length === 1) return { kind: 'desktop' };
     const a = parts[1];
     if (a === 'query-report' && parts[2]) return { kind: 'report', report: parts.slice(2).join('/'), key: 'Report|' + parts.slice(2).join('/') };
+    if (a === 'print' && parts[2] && d.doctypes[parts[2]]) return { kind: 'print', doctype: parts[2], name: parts.slice(3).join('/'), key: 'Page|print' };
     if (a === 'dashboard-view' && parts[2]) return { kind: 'dashboard', dashboard: parts[2], key: 'Dashboard|' + parts[2] };
-    if (PAGES[a]) return { kind: 'page', page: a, key: 'Page|' + a };
+    if (PAGES[a]) return { kind: 'page', page: a, key: 'Page|' + a, arg: parts.slice(2).join('/') || null };
     if (a === 'external') return { kind: 'page', page: 'external', url: query.url, key: 'URL|' + query.url };
     if (d.workspaceBySlug[a] && !d.doctypeBySlug[a]) return { kind: 'workspace', workspace: d.workspaceBySlug[a], key: 'Workspace|' + d.workspaceBySlug[a] };
     const dt = d.doctypeBySlug[a];
@@ -19154,9 +19337,18 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
 
   async function route() {
     await AFX.ready;
-    const { path, query } = parse();
+    const parsed = parse();
+    const { query } = parsed;
+    const old = oldForm(parsed.path);
+    if (old) {
+      const qs = new URLSearchParams(query).toString();
+      return go(old + (qs ? '?' + qs : ''), true);
+    }
+    const { path, shell: stated } = takeShell(parsed.path);
     const first = path.split('/')[0];
 
+    // Tab links of the original overview page ("#cash", "#rec", "#ov").
+    if (['ov', 'cash', 'rec'].includes(path)) return go(LEGACY.overview + '?view=' + path, true);
     // Legacy single-word routes ("#overview", "#overview/cash").
     if (LEGACY[first] !== undefined && !path.startsWith('desk')) {
       const sub = path.split('/')[1];
@@ -19169,6 +19361,32 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
 
     const r = resolve(path, query);
     Object.assign(r, { path, query: Object.assign({}, r.query, query) });
+    // New document → temporary name; calendar → /default; permission manager → doctype in the path.
+    const last = path.split('/').pop();
+    if ((r.kind === 'form' && r.isNew && last === 'new') || (r.page === 'form' && last === 'new')) {
+      rewriteHash((p, q) => p.replace(/\/new$/, '/' + tempName(path.split('/')[1])) + (q ? '?' + q : ''));
+    }
+    if (r.kind === 'list' && r.view === 'calendar' && !r.report) {
+      r.report = 'default';
+      rewriteHash((p, q) => p + '/default' + (q ? '?' + q : ''));
+    }
+    if (r.kind === 'page' && r.page === 'permission-manager') {
+      if (r.arg) r.query.doctype = r.arg;
+      else if (query.doctype) {
+        const rest = Object.assign({}, query);
+        delete rest.doctype;
+        const qs = new URLSearchParams(rest).toString();
+        rewriteHash((p) => p + '/' + encodeURIComponent(query.doctype) + (qs ? '?' + qs : ''));
+      }
+    }
+    r.shell = shellFor(r, stated);
+    writeShell(r, stated);
+    if (r.shell) shellOnScreen = r.shell;
+    // A saved order shows its name in the breadcrumb, a new one "New" (as /desk/purchase-order/<name>).
+    if (r.page === 'form') {
+      const name = path.split('/')[2] || '';
+      if (name && !/^new(-|$)/.test(name)) r.crumb = r.crumb.slice(0, -1).concat(name);
+    }
     AFX.route = r;
     document.dispatchEvent(new CustomEvent('afx:route', { detail: AFX.route }));
 
@@ -19178,6 +19396,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
         bootShell();
         const boot = BOOTS[r.page];
         if (boot && typeof window[boot] === 'function') window[boot]();
+        AFX.pages.legacy.enhance(r);
         if (query.view) {
           const tab = document.querySelector('[data-view="' + CSS.escape(query.view) + '"]');
           if (tab) tab.click();
@@ -19200,6 +19419,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
         case 'list': AFX.views.list.render(view, r); break;
         case 'form': AFX.views.form.render(view, r); break;
         case 'page': (PAGES[r.page] ? PAGES[r.page]() : AFX.views.page.render(view, r)); break;
+        case 'print': AFX.views.print.render(view, r); break;
         case 'dev': AFX.pages.devmap.render(view); break;
         case 'error': AFX.pages.errors.render(view, r.code); break;
         default: AFX.pages.errors.render(view, '404');
@@ -19238,7 +19458,12 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     workspace: (w) => '#/desk/' + AFX.slug(w),
     dashboard: (d) => '#/desk/dashboard-view/' + encodeURIComponent(d),
     page: (p) => '#/desk/' + p,
-    item(it) {
+    print: (dt, name) => '#/desk/print/' + encodeURIComponent(dt) + '/' + encodeURIComponent(name),
+    /* A sidebar link carries the shell it is listed in (Platform sidebar_item.get_route). */
+    item(it, shell) {
+      return withShell(link.itemBare(it), shell);
+    },
+    itemBare(it) {
       switch (it.link_type) {
         case 'DocType': return link.doctype(it.link_to) + (it.filters ? '?' + new URLSearchParams(safeFilters(it.filters)).toString() : '');
         case 'Report': return link.report(it.link_to);
@@ -19254,7 +19479,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     try { const arr = typeof f === 'string' ? JSON.parse(f) : f; const o = {}; (arr || []).forEach((x) => { if (Array.isArray(x) && x.length >= 4) o[x[1]] = x[3]; }); return o; } catch (e) { return {}; }
   }
 
-  Object.assign(AFX, { router: { route, go, parse, resolve, BESPOKE, LEGACY, PAGES }, go, link });
+  Object.assign(AFX, { router: { route, go, parse, resolve, takeShell, withShell, shellSlug, canonicalShell, BESPOKE, LEGACY, PAGES }, go, link });
 })();
 </script>
 <script data-file="js/afx/shell.js">
@@ -19272,8 +19497,8 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
   function currentSidebar() {
     const d = AFX.data;
     const r = AFX.route || {};
-    let sb = null;
-    if (r.key && d.sidebarOf[r.key]) sb = d.sidebarOf[r.key];
+    let sb = r.shell || null;
+    if (!sb && r.key && d.sidebarOf[r.key]) sb = d.sidebarOf[r.key];
     if (!sb && r.doctype) sb = (d.canonical.DocType || {})[r.doctype];
     if (!sb && r.report) sb = (d.canonical.Report || {})[r.report];
     if (!sb && r.page && (d.canonical.Page || {})[r.page]) sb = d.canonical.Page[r.page];
@@ -19322,13 +19547,13 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
 
   function countLinks(items) { return flatLinks(items).length; }
 
-  function linkRow(it, activeKey, child) {
+  function linkRow(it, activeKey, child, shell) {
     const active = keyOf(it) === activeKey;
     const ext = it.link_type === 'URL' && !(it.url || '').startsWith('/desk');
     return `
-      <a href="${link.item(it)}" class="afx-fly-link ${active ? 'is-active' : ''} ${child ? 'is-child' : ''}" data-fly-link data-label="${esc(String(it.label).toLowerCase())}" ${active ? 'aria-current="page"' : ''}>
+      <a href="${link.item(it, shell)}" class="afx-fly-link ${active ? 'is-active' : ''} ${child ? 'is-child' : ''}" data-fly-link data-label="${esc(String(it.label).toLowerCase())}" ${active ? 'aria-current="page"' : ''}>
         ${icon(it.icon || 'circle-dot', 16)}<span>${esc(it.label)}</span>${ext ? icon('external-link', 12) : ''}
-      </a>${(it.items || []).map((n) => linkRow(n, activeKey, true)).join('')}`;
+      </a>${(it.items || []).map((n) => linkRow(n, activeKey, true, shell)).join('')}`;
   }
 
   function moduleLinks(key) {
@@ -19336,7 +19561,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     return groups(AFX.data.sidebars[key].items).map((g) => `
       <section class="afx-fly-group">
         ${g.label ? `<h6>${esc(g.label)}</h6>` : ''}
-        ${g.links.map((it) => linkRow(it, activeKey)).join('')}
+        ${g.links.map((it) => linkRow(it, activeKey, false, key)).join('')}
       </section>`).join('');
   }
 
@@ -19346,7 +19571,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     const dockItem = (d.dock[app] || []).find((m) => m.link_to === key) || {};
     const s = d.sidebars[key];
     const home = s.items.find((i) => i.type === 'Link' && i.link_type === 'Workspace');
-    return { title: dockItem.title || s.label, icon: dockItem.icon || s.icon, app: (d.apps.find((a) => a.name === app) || {}).title || '', home: home ? link.item(home) : null, total: countLinks(s.items) };
+    return { title: dockItem.title || s.label, icon: dockItem.icon || s.icon, app: (d.apps.find((a) => a.name === app) || {}).title || '', home: home ? link.item(home, key) : null, total: countLinks(s.items) };
   }
 
   /* Sidebar: one row per module of the current app. Links open in the flyout. */
@@ -19624,7 +19849,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
           const key = it.link_type + '|' + (it.link_to || it.url);
           if (!seen.has(key)) {
             seen.add(key);
-            out.push({ label: it.label, type: it.link_type, to: it.link_to || it.url, href: link.item(it), module: s.label, icon: it.icon });
+            out.push({ label: it.label, type: it.link_type, to: it.link_to || it.url, href: link.item(it, sb), module: s.label, icon: it.icon });
           }
         }
         if (it.items) walk(it.items);
@@ -19813,7 +20038,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
       if (first) store.set('sidebar', first.link_to);
       const firstLink = first && AFX.data.sidebars[first.link_to].items.find((i) => i.type === 'Link');
       e.preventDefault();
-      AFX.go(firstLink ? link.item(firstLink).replace(/^#\//, '') : 'desk');
+      AFX.go(firstLink ? link.item(firstLink, first.link_to).replace(/^#\//, '') : 'desk');
       return;
     }
     const userBtn = t.closest('[data-user-menu]');
@@ -20186,7 +20411,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
       return wrap(f, `<div class="afx-multiselect">${rows.map((r) => `<span class="afx-token">${esc(Object.values(r)[0])}<button type="button" aria-label="Remove">${icon('x', 12)}</button></span>`).join('')}<input placeholder="${esc(f.options || '')}" data-link="${esc((child && child.fields.map(df).find((c) => c.fieldtype === 'Link') || {}).options || '')}"></div>`, 'is-wide');
     }
     const body = rows.length
-      ? rows.map((r, i) => `<tr><td class="afx-cgrid-idx"><span class="saas-checkbox"></span>${i + 1}</td>${cols.map((c) => `<td class="${['Currency', 'Float', 'Int', 'Percent'].includes(c.fieldtype) ? 'numeric' : ''}">${esc(r[c.fieldname] == null ? '' : c.fieldtype === 'Currency' ? fmt.number(r[c.fieldname]) : r[c.fieldname])}</td>`).join('')}<td class="afx-cgrid-edit"><button type="button" class="afx-icon-btn" aria-label="Edit row">${icon('pencil', 13)}</button></td></tr>`).join('')
+      ? rows.map((r, i) => `<tr><td class="afx-cgrid-idx"><span class="saas-checkbox"></span>${i + 1}</td>${cols.map((c) => `<td class="${['Currency', 'Float', 'Int', 'Percent'].includes(c.fieldtype) ? 'numeric' : ''}">${esc(r[c.fieldname] == null ? '' : c.fieldtype === 'Currency' ? fmt.number(r[c.fieldname]) : r[c.fieldname])}</td>`).join('')}<td class="afx-cgrid-edit"><button type="button" class="afx-icon-btn" data-grid-edit aria-label="Edit row">${icon('pencil', 13)}</button></td></tr>`).join('')
       : `<tr class="afx-cgrid-empty"><td colspan="${cols.length + 2}">${icon('table', 18)}<span>No ${esc(f.label || 'rows')}</span></td></tr>`;
     return `
       <div class="afx-field form-group ft-table is-wide" data-fieldname="${esc(f.fieldname)}" data-fieldtype="Table" data-child="${esc(f.options)}">
@@ -20197,7 +20422,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
             <tbody>${body}</tbody>
           </table>
         </div>
-        ${ro ? '' : `<div class="afx-cgrid-foot"><button type="button" class="btn btn-secondary btn-sm" data-add-row>${icon('plus', 13)} Add Row</button><button type="button" class="btn btn-ghost btn-sm">Add Multiple</button><span></span><button type="button" class="btn btn-ghost btn-sm">${icon('download', 13)} Download</button><button type="button" class="btn btn-ghost btn-sm">${icon('upload', 13)} Upload</button></div>`}
+        ${ro ? '' : `<div class="afx-cgrid-foot"><button type="button" class="btn btn-secondary btn-sm" data-add-row>${icon('plus', 13)} Add Row</button><button type="button" class="btn btn-ghost btn-sm" data-grid-multi>Add Multiple</button><span></span><button type="button" class="btn btn-ghost btn-sm" data-grid-download>${icon('download', 13)} Download</button><button type="button" class="btn btn-ghost btn-sm" data-grid-upload>${icon('upload', 13)} Upload</button></div>`}
         ${f.description ? `<div class="afx-field-help">${esc(f.description)}</div>` : ''}
       </div>`;
   }
@@ -20233,7 +20458,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
   document.addEventListener('focusout', (e) => { if (e.target.matches && e.target.matches('input[data-link]')) setTimeout(closeDropdown, 120); });
   window.addEventListener('scroll', closeDropdown, true);
   document.addEventListener('click', (e) => {
-    const rv = e.target.closest('[data-reveal]');
+    const rv = e.target.closest('.afx-pass-input button[data-reveal]');
     if (rv) { const i = rv.parentElement.querySelector('input'); i.type = i.type === 'password' ? 'text' : 'password'; rv.innerHTML = icon(i.type === 'password' ? 'eye' : 'eye-off', 15); }
     const add = e.target.closest('[data-add-row]');
     if (add) {
@@ -20243,12 +20468,111 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
       if (empty) empty.remove();
       const n = tbody.children.length + 1;
       const cols = grid.querySelectorAll('thead th').length - 2;
-      tbody.insertAdjacentHTML('beforeend', `<tr class="is-new"><td class="afx-cgrid-idx"><span class="saas-checkbox"></span>${n}</td>${'<td><input class="afx-cgrid-input"></td>'.repeat(cols)}<td class="afx-cgrid-edit"><button type="button" class="afx-icon-btn">${icon('pencil', 13)}</button></td></tr>`);
+      tbody.insertAdjacentHTML('beforeend', `<tr class="is-new"><td class="afx-cgrid-idx"><span class="saas-checkbox"></span>${n}</td>${'<td><input class="afx-cgrid-input"></td>'.repeat(cols)}<td class="afx-cgrid-edit"><button type="button" class="afx-icon-btn" data-grid-edit aria-label="Edit row">${icon('pencil', 13)}</button></td></tr>`);
       const first = tbody.lastElementChild.querySelector('input');
       if (first) first.focus();
       document.dispatchEvent(new CustomEvent('afx:dirty'));
     }
+    const tool = e.target.closest('[data-grid-multi], [data-grid-download], [data-grid-upload], [data-grid-edit]');
+    if (tool) gridTool(tool);
   });
+
+  /* Child table tools, as the platform grid: Add Multiple, Download (CSV), Upload (CSV), row editor. */
+  function gridInfo(grid) {
+    const child = AFX.data.doctypes[grid.dataset.child];
+    const cols = child ? child.fields.map(df).filter((c) => c.in_list_view && !LAYOUT.has(c.fieldtype)).slice(0, 6) : [];
+    return { child, cols, tbody: grid.querySelector('tbody') };
+  }
+  function addGridRows(grid, values) {
+    const { cols, tbody } = gridInfo(grid);
+    const empty = tbody.querySelector('.afx-cgrid-empty');
+    if (empty) empty.remove();
+    values.forEach((vals) => {
+      const n = tbody.children.length + 1;
+      tbody.insertAdjacentHTML('beforeend', `<tr class="is-new"><td class="afx-cgrid-idx"><span class="saas-checkbox"></span>${n}</td>${cols.map((c, i) => `<td><input class="afx-cgrid-input" value="${esc(vals[i] == null ? '' : vals[i])}"></td>`).join('')}<td class="afx-cgrid-edit"><button type="button" class="afx-icon-btn" data-grid-edit aria-label="Edit row">${icon('pencil', 13)}</button></td></tr>`);
+    });
+    document.dispatchEvent(new CustomEvent('afx:dirty'));
+  }
+  const cellText = (td) => { const i = td.querySelector('input'); return (i ? i.value : td.textContent).trim(); };
+  function gridTool(btn) {
+    const grid = btn.closest('.ft-table');
+    const { child, cols, tbody } = gridInfo(grid);
+    const label = (grid.querySelector('.afx-cgrid-head label') || {}).textContent || grid.dataset.child;
+    if (btn.matches('[data-grid-download]')) {
+      const rows = AFX.qsa('tr:not(.afx-cgrid-empty)', tbody).map((tr) => cols.map((c, i) => cellText(tr.children[i + 1])));
+      const csv = [cols.map((c) => c.label)].concat(rows).map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+      a.download = `${grid.dataset.child}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      return AFX.ui.toast('Downloaded', `${rows.length} ${label.trim()} row${rows.length === 1 ? '' : 's'} as CSV`, 'success');
+    }
+    if (btn.matches('[data-grid-upload]')) {
+      return AFX.ui.dialog({
+        title: 'Upload ' + label.trim(), icon: 'upload', subtitle: 'CSV with the same columns as Download',
+        body: `<div class="afx-form-grid is-1"><input type="file" accept=".csv,text/csv" class="form-input" data-grid-file></div>`,
+        actions: [{ label: 'Cancel' }, {
+          label: 'Upload', primary: true,
+          action: (w) => {
+            const f = w.querySelector('[data-grid-file]').files[0];
+            if (!f) { AFX.ui.toast('No file', 'Choose a CSV file first', 'warning'); return false; }
+            const rd = new FileReader();
+            rd.onload = () => {
+              const lines = String(rd.result).split(/\r?\n/).filter(Boolean).slice(1);
+              addGridRows(grid, lines.map((l) => l.split(',').map((v) => v.replace(/^"|"$/g, '').replace(/""/g, '"'))));
+              AFX.ui.toast('Uploaded', `${lines.length} rows added to ${label.trim()}`, 'success');
+            };
+            rd.readAsText(f);
+            return true;
+          },
+        }],
+      });
+    }
+    if (btn.matches('[data-grid-multi]')) {
+      const linkCol = cols.find((c) => c.fieldtype === 'Link');
+      if (!linkCol) return AFX.ui.toast('Add Multiple', 'This table has no link column to pick from', 'info');
+      const options = recordNames(linkCol.options);
+      return AFX.ui.dialog({
+        title: 'Add ' + linkCol.label, icon: 'list-plus', subtitle: `Select ${linkCol.options} records to add as rows`,
+        body: options.length
+          ? `<div class="afx-col-pick">${options.slice(0, 60).map((o) => `<label class="afx-check"><input type="checkbox" value="${esc(o.name)}"><span class="afx-check-box">${icon('check', 12)}</span><span>${esc(o.name)}${o.title && o.title !== o.name ? ` <small class="afx-muted">${esc(o.title)}</small>` : ''}</span></label>`).join('')}</div>`
+          : `<div class="afx-msg">No ${esc(linkCol.options)} records in this site yet.</div>`,
+        actions: [{ label: 'Cancel' }, {
+          label: 'Add', primary: true,
+          action: (w) => {
+            const picked = AFX.qsa('input:checked', w).map((i) => i.value);
+            const at = cols.indexOf(linkCol);
+            addGridRows(grid, picked.map((v) => cols.map((c, i) => (i === at ? v : ''))));
+          },
+        }],
+      });
+    }
+    if (btn.matches('[data-grid-edit]')) {
+      const tr = btn.closest('tr');
+      const idx = tr.querySelector('.afx-cgrid-idx').textContent.trim();
+      return AFX.ui.dialog({
+        title: `Editing Row #${idx}`, icon: 'pencil', subtitle: child ? child.name : '',
+        body: `<div class="afx-form-grid is-2">${cols.map((c, i) => render(c, cellText(tr.children[i + 1]))).join('')}</div>`,
+        actions: [{ label: 'Delete Row', danger: true, action: () => { tr.remove(); AFX.qsa('tr', tbody).forEach((r, i) => { const c = r.querySelector('.afx-cgrid-idx'); if (c) c.lastChild.textContent = i + 1; }); document.dispatchEvent(new CustomEvent('afx:dirty')); } }, {
+          label: 'Update', primary: true,
+          action: (w) => {
+            cols.forEach((c, i) => {
+              const input = w.querySelector(`[name="${CSS.escape(c.fieldname)}"]`);
+              const td = tr.children[i + 1];
+              if (!input || !td) return;
+              const v = input.type === 'checkbox' ? (input.checked ? '1' : '0') : input.value;
+              const cellInput = td.querySelector('input');
+              if (cellInput) cellInput.value = v; else td.textContent = v;
+            });
+            document.dispatchEvent(new CustomEvent('afx:dirty'));
+          },
+        }],
+      });
+    }
+    return null;
+  }
 
   AFX.controls = { df, fields, render, renderTable, evalDepends, defaultValue, recordNames, LAYOUT, NO_VALUE };
 })();
@@ -20368,6 +20692,84 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     }
   }
 
+  /* ---------- filters, sort and page length (List, Report, Kanban, Image) ----------
+     Filters live in the URL as on the platform: ?status=Open for "equals",
+     ?grand_total=[">=",1000] or ?status=["in",["Open","Overdue"]] for other conditions. */
+  const OPS = [['=', 'Equals'], ['!=', 'Not Equals'], ['like', 'Like'], ['not like', 'Not Like'], ['in', 'In'], ['not in', 'Not In'], ['is', 'Is'], ['>', '>'], ['<', '<'], ['>=', '>='], ['<=', '<='], ['between', 'Between']];
+  const NOT_SORTABLE = ['Table', 'Table MultiSelect', 'HTML', 'Button', 'Text Editor', 'Small Text', 'Text', 'Long Text', 'Code', 'JSON', 'Attach Image', 'Attach'];
+
+  const ymd = (v) => { const m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(String(v).trim()); return m ? `${m[3]}-${m[2]}-${m[1]}` : String(v).trim(); };
+  function test(val, op, v) {
+    const s = val == null ? '' : String(val);
+    const lo = s.toLowerCase();
+    const num = (x) => parseFloat(String(x).replace(/,/g, ''));
+    const cmp = (a, b) => (!isNaN(num(a)) && !isNaN(num(b)) && !/^\d{4}-\d{2}/.test(String(a)) ? num(a) - num(b) : String(a).localeCompare(ymd(b)));
+    const list = (x) => (Array.isArray(x) ? x : String(x).split(',')).map((y) => String(y).trim().toLowerCase());
+    switch (op) {
+      case '=': return lo === String(v).toLowerCase();
+      case '!=': return lo !== String(v).toLowerCase();
+      case 'like': return lo.includes(String(v).replace(/%/g, '').toLowerCase());
+      case 'not like': return !lo.includes(String(v).replace(/%/g, '').toLowerCase());
+      case 'in': return list(v).includes(lo);
+      case 'not in': return !list(v).includes(lo);
+      case 'is': return v === 'set' ? s !== '' : s === '';
+      case '>': return s !== '' && cmp(s, v) > 0;
+      case '<': return s !== '' && cmp(s, v) < 0;
+      case '>=': return s !== '' && cmp(s, v) >= 0;
+      case '<=': return s !== '' && cmp(s, v) <= 0;
+      case 'between': { const [a, b] = Array.isArray(v) ? v : String(v).split(','); return s !== '' && cmp(s, a) >= 0 && cmp(s, b) <= 0; }
+      default: return true;
+    }
+  }
+
+  function sortOf(dt, state) {
+    if (state.sort) return state.sort;
+    const [field, dir] = (AFX.data.doctypes[dt].sort || 'modified DESC').split(' ');
+    return { field, dir: String(dir || 'DESC').toLowerCase() };
+  }
+  function sortOptions(dt) {
+    const meta = AFX.data.doctypes[dt];
+    const seen = new Set();
+    return [{ fieldname: 'modified', label: 'Last Updated On' }, { fieldname: 'name', label: 'ID' }, { fieldname: 'creation', label: 'Created On' }]
+      .concat(C().fields(dt).filter((x) => (x.in_list_view || x.in_standard_filter || x.bold || x.fieldname === meta.title_field) && !C().LAYOUT.has(x.fieldtype) && !NOT_SORTABLE.includes(x.fieldtype)))
+      .filter((x) => !seen.has(x.fieldname) && seen.add(x.fieldname));
+  }
+  function filterFields(dt) {
+    return [{ fieldname: 'name', label: 'ID', fieldtype: 'Data' }].concat(C().fields(dt).filter((x) => !C().LAYOUT.has(x.fieldtype) && !['Table', 'Table MultiSelect', 'HTML', 'Button'].includes(x.fieldtype)));
+  }
+
+  /* Rows after search, standard filters, filters and sort (page length is applied by the view). */
+  function query(dt, state, rows) {
+    const meta = AFX.data.doctypes[dt];
+    const q = (state.q || '').toLowerCase();
+    let out = rows;
+    if (q) out = out.filter((x) => String(x.name).toLowerCase().includes(q) || String(x[meta.title_field] || '').toLowerCase().includes(q));
+    Object.entries(state.std || {}).forEach(([k, v]) => { if (v) out = out.filter((x) => test(x[k], 'like', v)); });
+    (state.filters || []).forEach(([f, op, v]) => { out = out.filter((x) => test(x[f], op, v)); });
+    const s = sortOf(dt, state);
+    const val = (x) => (x[s.field] !== undefined ? x[s.field] : s.field === 'creation' ? x.modified : '');
+    return out.slice().sort((a, b) => {
+      const va = val(a);
+      const vb = val(b);
+      const r = typeof va === 'number' && typeof vb === 'number' ? va - vb : String(va == null ? '' : va).localeCompare(String(vb == null ? '' : vb), undefined, { numeric: true });
+      return s.dir === 'asc' ? r : -r;
+    });
+  }
+
+  function toQuery(state) {
+    const q = new URLSearchParams();
+    Object.entries(state.std || {}).forEach(([k, v]) => { if (v) q.set(k, v); });
+    (state.filters || []).forEach(([f, op, v]) => q.set(f, op === '=' ? v : JSON.stringify([op, v])));
+    return q.toString().replace(/\+/g, '%20');
+  }
+  function syncUrl(r, state) {
+    if (!['list', 'report', 'kanban', 'image'].includes(r.view)) return;
+    const base = location.hash.split('?')[0];
+    const s = toQuery(state);
+    const h = base + (s ? '?' + s : '');
+    if (decodeURIComponent(location.hash) !== decodeURIComponent(h)) history.replaceState(null, '', h);
+  }
+
   /* ---------- shared header ---------- */
   function header(dt, view, count, opts) {
     const meta = AFX.data.doctypes[dt];
@@ -20412,22 +20814,31 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
 
   function filterBar(dt, f) {
     const std = C().fields(dt).filter((x) => x.in_standard_filter && !C().LAYOUT.has(x.fieldtype)).slice(0, 4);
-    const sort = (AFX.data.doctypes[dt].sort || 'modified DESC').split(' ');
-    const sortField = C().fields(dt).find((x) => x.fieldname === sort[0]);
+    const sort = sortOf(dt, f);
+    const opts = sortOptions(dt);
+    const cur = opts.find((x) => x.fieldname === sort.field);
+    const n = (f.filters || []).length;
+    const stdVal = (k) => esc((f.std || {})[k] || '');
     return `
       <div class="saas-card afx-filter-bar">
         <div class="afx-std-filters">
           <label class="afx-filter-input">${icon('search', 14)}<input type="search" placeholder="ID" data-q value="${esc(f.q || '')}"></label>
           ${std.map((x) => x.fieldtype === 'Select'
-            ? `<div class="afx-select is-mini"><select data-std="${esc(x.fieldname)}"><option value="">${esc(x.label)}</option>${(Array.isArray(x.options) ? x.options : String(x.options || '').split('\n')).filter(Boolean).map((o) => `<option>${esc(o)}</option>`).join('')}</select>${icon('chevron-down', 12)}</div>`
-            : `<label class="afx-filter-input"><input type="search" placeholder="${esc(x.label)}" data-std="${esc(x.fieldname)}" ${x.fieldtype === 'Link' ? `data-link="${esc(x.options)}"` : ''}></label>`).join('')}
+            ? `<div class="afx-select is-mini"><select data-std="${esc(x.fieldname)}"><option value="">${esc(x.label)}</option>${(Array.isArray(x.options) ? x.options : String(x.options || '').split('\n')).filter(Boolean).map((o) => `<option ${(f.std || {})[x.fieldname] === o ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>${icon('chevron-down', 12)}</div>`
+            : `<label class="afx-filter-input"><input type="search" placeholder="${esc(x.label)}" data-std="${esc(x.fieldname)}" value="${stdVal(x.fieldname)}" ${x.fieldtype === 'Link' ? `data-link="${esc(x.options)}"` : ''}></label>`).join('')}
         </div>
         <div class="afx-filter-tools">
           <span class="status-badge blue" data-selcount hidden>0 selected</span>
-          <button class="btn btn-secondary btn-sm" data-add-filter>${icon('funnel', 13)} Filter</button>
+          <div class="afx-btn-group">
+            <button class="btn btn-secondary btn-sm ${n ? 'afx-is-on' : ''}" data-add-filter>${icon('funnel', 13)} ${n ? `${n} filter${n === 1 ? '' : 's'}` : 'Filter'}</button>
+            ${n ? `<button class="btn btn-secondary btn-sm btn-icon" data-clear-filters title="Clear filters" aria-label="Clear filters">${icon('x', 13)}</button>` : ''}
+          </div>
           <div class="afx-sort">
-            <button class="btn btn-secondary btn-sm btn-icon" data-sort-dir title="Toggle sort order">${icon(sort[1] === 'ASC' ? 'arrow-up-narrow-wide' : 'arrow-down-wide-narrow', 14)}</button>
-            <button class="btn btn-secondary btn-sm">${esc(sortField ? sortField.label : sort[0] === 'modified' ? 'Last Updated On' : sort[0] === 'creation' ? 'Created On' : sort[0])}</button>
+            <button class="btn btn-secondary btn-sm btn-icon" data-sort-dir title="${sort.dir === 'asc' ? 'Ascending' : 'Descending'}" aria-label="Toggle sort order">${icon(sort.dir === 'asc' ? 'arrow-up-narrow-wide' : 'arrow-down-wide-narrow', 14)}</button>
+            <div class="afx-dd">
+              <button class="btn btn-secondary btn-sm" data-dd aria-haspopup="menu">${esc(cur ? cur.label : sort.field)}</button>
+              <div class="afx-menu is-right" hidden role="menu">${opts.map((o) => `<a class="afx-menu-item ${o.fieldname === sort.field ? 'is-current' : ''}" href="#" role="menuitem" data-sort-by="${esc(o.fieldname)}"><span>${esc(o.label || o.fieldname)}</span></a>`).join('')}</div>
+            </div>
           </div>
         </div>
       </div>`;
@@ -20447,19 +20858,31 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
       </div>`;
   }
 
+  function noMatch() {
+    return `
+      <div class="afx-empty">
+        <div class="afx-empty-art">${icon('funnel', 30)}</div>
+        <b>No records match these filters</b>
+        <span>Change or clear the filters to see more.</span>
+        <div class="afx-empty-actions"><button class="btn btn-secondary btn-sm" data-clear-filters>${icon('x', 14)} Clear filters</button></div>
+      </div>`;
+  }
+
   /* ---------- List view ---------- */
   function renderList(view, r, state) {
     const dt = r.doctype;
     const meta = AFX.data.doctypes[dt];
     const real = realRows(dt);
     const example = !real.length && state.example;
-    let rows = real.length ? real : example ? exampleRows(dt) : [];
-    const q = (state.q || '').toLowerCase();
-    if (q) rows = rows.filter((x) => String(x.name).toLowerCase().includes(q) || String(x[meta.title_field] || '').toLowerCase().includes(q));
-    Object.entries(state.std || {}).forEach(([k, v]) => { if (v) rows = rows.filter((x) => String(x[k] || '').toLowerCase().includes(String(v).toLowerCase())); });
+    const source = real.length ? real : example ? exampleRows(dt) : [];
+    const matched = query(dt, state, source);
+    const pageLength = state.pageLength || 20;
+    const rows = matched.slice(0, pageLength);
+    const filtered = matched.length !== source.length;
     const cols = columns(dt);
-    const count = (AFX.data.records[dt] || {}).count;
+    const count = filtered ? matched.length : (AFX.data.records[dt] || {}).count;
     const titleOf = (x) => x[meta.title_field] || x.name;
+    const liked = new Set(store.get('likes:' + dt, []));
     view.innerHTML = `
       ${header(dt, 'list', count)}
       <div class="page-viewport-canvas afx-canvas">
@@ -20469,12 +20892,12 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
         <div class="table-wrapper">
           <div class="afx-bulk-bar" hidden>
             <span class="num" data-bulk-count>0</span> selected
-            <button class="btn btn-secondary btn-sm">${icon('pencil', 13)} Edit</button>
-            <button class="btn btn-secondary btn-sm">${icon('download', 13)} Export</button>
-            <button class="btn btn-secondary btn-sm">${icon('user-plus', 13)} Assign To</button>
-            <button class="btn btn-secondary btn-sm">${icon('tag', 13)} Add Tags</button>
-            <button class="btn btn-secondary btn-sm">${icon('printer', 13)} Print</button>
-            ${meta.flags && meta.flags.includes('u') ? `<button class="btn btn-secondary btn-sm">${icon('circle-check', 13)} Submit</button>` : ''}
+            <button class="btn btn-secondary btn-sm" data-bulk="edit">${icon('pencil', 13)} Edit</button>
+            <button class="btn btn-secondary btn-sm" data-bulk="export">${icon('download', 13)} Export</button>
+            <button class="btn btn-secondary btn-sm" data-bulk="assign">${icon('user-plus', 13)} Assign To</button>
+            <button class="btn btn-secondary btn-sm" data-bulk="tags">${icon('tag', 13)} Add Tags</button>
+            <button class="btn btn-secondary btn-sm" data-bulk="print">${icon('printer', 13)} Print</button>
+            ${meta.flags && meta.flags.includes('u') ? `<button class="btn btn-secondary btn-sm" data-bulk="submit">${icon('circle-check', 13)} Submit</button>` : ''}
             <button class="btn btn-danger btn-sm" data-bulk-delete>${icon('trash-2', 13)} Delete</button>
           </div>
           <div class="table-scroller">
@@ -20493,16 +20916,16 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
                     <td class="primary-ref"><a href="${link.doc(dt, x.name)}">${esc(titleOf(x))}</a>${titleOf(x) !== x.name ? `<small class="afx-sub-id">${esc(x.name)}</small>` : ''}</td>
                     <td>${indicator(x)}</td>
                     ${cols.map((c) => `<td class="${['Currency', 'Float', 'Int', 'Percent'].includes(c.fieldtype) ? 'numeric' : ''}">${cell(x, c)}</td>`).join('')}
-                    <td class="afx-meta-col"><span class="afx-muted num" title="${esc(fmt.datetime(x.modified))}">${esc(fmt.ago(x.modified))}</span><span class="afx-muted">${icon('message-square', 13)} 0</span><button class="afx-like" aria-label="Like">${icon('heart', 13)}</button></td>
+                    <td class="afx-meta-col"><span class="afx-muted num" title="${esc(fmt.datetime(x.modified))}">${esc(fmt.ago(x.modified))}</span><span class="afx-muted">${icon('message-square', 13)} 0</span><button class="afx-like ${liked.has(x.name) ? 'is-liked' : ''}" data-like="${esc(x.name)}" aria-pressed="${liked.has(x.name)}" aria-label="Like">${icon('heart', 13)}</button></td>
                   </tr>`).join('')}
               </tbody>
             </table>
           </div>
           <div class="afx-paging">
-            <div class="afx-seg">${[20, 100, 500, 2500].map((n, i) => `<button class="${i === 0 ? 'active' : ''}">${n}</button>`).join('')}</div>
-            <span class="afx-muted">Showing ${rows.length} of ${example ? rows.length : count}</span>
+            <div class="afx-seg" role="group" aria-label="Page length">${[20, 100, 500, 2500].map((n) => `<button class="${n === pageLength ? 'active' : ''}" data-page-length="${n}" aria-pressed="${n === pageLength}">${n}</button>`).join('')}</div>
+            <span class="afx-muted">Showing ${rows.length} of ${example ? matched.length : count}</span>
           </div>
-        </div>` : emptyState(dt, example)}
+        </div>` : source.length ? noMatch() : emptyState(dt, example)}
       </div>`;
   }
 
@@ -20510,32 +20933,50 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
   function renderReportView(view, r, state) {
     const dt = r.doctype;
     const real = realRows(dt);
-    const rows = real.length ? real : state.example ? exampleRows(dt) : [];
+    const source = real.length ? real : state.example ? exampleRows(dt) : [];
+    const rows = query(dt, state, source).slice(0, state.pageLength || 20);
     const all = C().fields(dt).filter((x) => !C().LAYOUT.has(x.fieldtype) && !['Table', 'Table MultiSelect', 'HTML', 'Button'].includes(x.fieldtype) && !x.hidden);
-    const cols = [{ fieldname: 'name', label: 'ID', fieldtype: 'Data' }].concat(all.filter((x) => x.in_list_view || x.in_standard_filter || x.bold).slice(0, 9));
+    const picked = store.get('cols:' + dt, null);
+    const base = picked ? picked.map((n) => all.find((x) => x.fieldname === n)).filter(Boolean) : all.filter((x) => x.in_list_view || x.in_standard_filter || x.bold).slice(0, 9);
+    const cols = [{ fieldname: 'name', label: 'ID', fieldtype: 'Data' }].concat(base);
     const numeric = (c) => ['Currency', 'Float', 'Int', 'Percent'].includes(c.fieldtype);
+    const groupField = state.groupBy ? all.find((x) => x.fieldname === state.groupBy) : null;
+    const editable = (c) => c.fieldname !== 'name' && !['Link', 'Dynamic Link', 'Check', 'Select'].includes(c.fieldtype) && !c.read_only;
+    const rowHtml = (x, i) => `<tr data-name="${esc(x.name)}"><td class="afx-rownum">${i + 1}</td>${cols.map((c) => `<td class="${numeric(c) ? 'numeric' : ''}" ${editable(c) ? 'contenteditable="true"' : ''}>${c.fieldname === 'name' ? `<a href="${link.doc(dt, x.name)}">${esc(x.name)}</a>` : cell(x, c)}</td>`).join('')}</tr>`;
+    const totals = (list) => cols.map((c) => `<td class="${numeric(c) ? 'numeric' : ''}">${numeric(c) ? `<b class="num">${esc(fmt.number(list.reduce((s, x) => s + (Number(x[c.fieldname]) || 0), 0), c.fieldtype === 'Int' ? 0 : 2))}</b>` : c.fieldname === 'name' ? '<b>Total</b>' : ''}</td>`).join('');
+    let body;
+    if (groupField) {
+      const groups = {};
+      rows.forEach((x) => { const k = x[groupField.fieldname] == null || x[groupField.fieldname] === '' ? 'Not Set' : String(x[groupField.fieldname]); (groups[k] = groups[k] || []).push(x); });
+      let i = 0;
+      body = Object.entries(groups).map(([k, list]) => `
+        <tr class="afx-group-row"><td class="afx-rownum"></td><td colspan="${cols.length}"><b>${esc(groupField.label)}: ${esc(k)}</b> <span class="afx-muted">${list.length} ${list.length === 1 ? 'row' : 'rows'}</span></td></tr>
+        ${list.map((x) => rowHtml(x, i++)).join('')}`).join('');
+    } else {
+      body = rows.map(rowHtml).join('');
+    }
     view.innerHTML = `
       ${header(dt, 'report', (AFX.data.records[dt] || {}).count)}
       <div class="page-viewport-canvas afx-canvas">
         ${filterBar(dt, state)}
         <div class="afx-report-tools">
-          <button class="btn btn-secondary btn-sm">${icon('layers', 13)} Group By</button>
+          <button class="btn btn-secondary btn-sm ${groupField ? 'afx-is-on' : ''}" data-group-by>${icon('layers', 13)} ${groupField ? 'Group By: ' + esc(groupField.label) : 'Group By'}</button>
           <button class="btn btn-secondary btn-sm" data-pick-cols>${icon('table', 13)} Pick Columns</button>
-          <label class="afx-check"><input type="checkbox"><span class="afx-check-box">${icon('check', 12)}</span><span>Show Totals</span></label>
+          <label class="afx-check"><input type="checkbox" data-show-totals ${state.totals ? 'checked' : ''}><span class="afx-check-box">${icon('check', 12)}</span><span>Show Totals</span></label>
           <span class="afx-grow"></span>
-          <button class="btn btn-secondary btn-sm">${icon('save', 13)} Save As</button>
-          <button class="btn btn-secondary btn-sm">${icon('download', 13)} Export</button>
+          <button class="btn btn-secondary btn-sm" data-save-report>${icon('save', 13)} Save As</button>
+          <button class="btn btn-secondary btn-sm" data-bulk="export">${icon('download', 13)} Export</button>
         </div>
         ${rows.length ? `
         <div class="table-wrapper afx-datagrid">
           <div class="table-scroller">
             <table class="saas-table dense">
-              <thead><tr><th class="afx-rownum">#</th>${cols.map((c) => `<th class="${numeric(c) ? 'align-right' : ''}"><span>${esc(c.label)}</span><small>${esc(c.fieldtype)}</small></th>`).join('')}</tr></thead>
-              <tbody>${rows.map((x, i) => `<tr><td class="afx-rownum">${i + 1}</td>${cols.map((c) => `<td class="${numeric(c) ? 'numeric' : ''}" ${c.fieldname === 'name' ? '' : 'contenteditable="true"'}>${c.fieldname === 'name' ? `<a href="${link.doc(dt, x.name)}">${esc(x.name)}</a>` : cell(x, c)}</td>`).join('')}</tr>`).join('')}</tbody>
-              ${cols.some(numeric) ? `<tfoot><tr><td class="afx-rownum"></td>${cols.map((c) => `<td class="${numeric(c) ? 'numeric' : ''}">${numeric(c) ? `<b class="num">${esc(fmt.number(rows.reduce((s, x) => s + (Number(x[c.fieldname]) || 0), 0), c.fieldtype === 'Int' ? 0 : 2))}</b>` : c.fieldname === 'name' ? '<b>Total</b>' : ''}</td>`).join('')}</tr></tfoot>` : ''}
+              <thead><tr><th class="afx-rownum">#</th>${cols.map((c) => `<th class="${numeric(c) ? 'align-right' : ''} sortable"><span>${esc(c.label)}</span><small>${esc(c.fieldtype)}</small></th>`).join('')}</tr></thead>
+              <tbody>${body}</tbody>
+              ${state.totals && cols.some(numeric) ? `<tfoot><tr><td class="afx-rownum"></td>${totals(rows)}</tr></tfoot>` : ''}
             </table>
           </div>
-        </div>` : emptyState(dt, state.example)}
+        </div>` : source.length ? noMatch() : emptyState(dt, state.example)}
       </div>`;
   }
 
@@ -20594,8 +21035,10 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     const by = f.find((x) => x.fieldname === (state.by || 'status')) || f[0];
     const opts = (Array.isArray(by.options) ? by.options : String(by.options || '').split('\n')).filter(Boolean).slice(0, 8);
     const real = realRows(dt);
-    const rows = real.length ? real : state.example ? exampleRows(dt) : [];
+    const rows = query(dt, state, real.length ? real : state.example ? exampleRows(dt) : []);
     const meta = AFX.data.doctypes[dt];
+    const archived = new Set((state.archived || {})[by.fieldname] || []);
+    const collapsed = new Set((state.collapsed || {})[by.fieldname] || []);
     view.innerHTML = `
       ${header(dt, 'kanban', (AFX.data.records[dt] || {}).count)}
       <div class="page-viewport-canvas afx-canvas">
@@ -20603,13 +21046,21 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
           <span class="afx-muted">Columns by</span>
           <div class="afx-select is-mini"><select data-kanban-by>${f.map((x) => `<option value="${esc(x.fieldname)}" ${x === by ? 'selected' : ''}>${esc(x.label)}</option>`).join('')}</select>${icon('chevron-down', 12)}</div>
           ${!real.length ? `<button class="btn btn-ghost btn-sm" data-example>${icon('eye', 13)} ${state.example ? 'Hide' : 'Show'} example cards</button>` : ''}
+          ${archived.size ? `<button class="btn btn-ghost btn-sm" data-kanban-restore>${icon('archive-restore', 13)} Show archived columns (${archived.size})</button>` : ''}
         </div>
         <div class="afx-kanban">
-          ${opts.map((o) => {
+          ${opts.filter((o) => !archived.has(o)).map((o) => {
             const items = rows.filter((x) => x[by.fieldname] === o);
             return `
-              <section class="afx-kanban-col">
-                <header><span class="afx-kanban-dot" style="--h:${AFX.hashHue(o)}"></span><b>${esc(o)}</b><span class="afx-pill">${items.length}</span><button class="afx-icon-btn" aria-label="Column menu">${icon('ellipsis', 14)}</button></header>
+              <section class="afx-kanban-col ${collapsed.has(o) ? 'is-collapsed' : ''}">
+                <header><span class="afx-kanban-dot" style="--h:${AFX.hashHue(o)}"></span><b>${esc(o)}</b><span class="afx-pill">${items.length}</span>
+                  <div class="afx-dd"><button class="afx-icon-btn" data-dd aria-label="Column menu" aria-haspopup="menu">${icon('ellipsis', 14)}</button>
+                    <div class="afx-menu is-right" hidden role="menu">
+                      <a class="afx-menu-item" href="#" data-kanban-collapse="${esc(o)}">${icon(collapsed.has(o) ? 'chevrons-left-right' : 'chevrons-right-left', 15)}<span>${collapsed.has(o) ? 'Expand' : 'Collapse'}</span></a>
+                      <a class="afx-menu-item" href="#" data-kanban-archive="${esc(o)}">${icon('archive', 15)}<span>Archive</span></a>
+                    </div>
+                  </div>
+                </header>
                 <div class="afx-kanban-cards">
                   ${items.map((x) => `<a class="afx-kanban-card" href="${link.doc(dt, x.name)}"><b>${esc(x[meta.title_field] || x.name)}</b><small>${esc(x.name)}</small><span class="afx-muted afx-small">${esc(fmt.ago(x.modified))}</span></a>`).join('') || '<div class="afx-kanban-empty">No cards</div>'}
                   <a class="afx-kanban-add" href="${link.newDoc(dt)}">${icon('plus', 13)} Add ${esc(dt)}</a>
@@ -20621,27 +21072,61 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
   }
 
   /* ---------- Calendar view ---------- */
-  function renderCalendar(view, r) {
+  /* Calendar fields, as the platform calendar settings map them (start / end / title). */
+  function calendarFields(dt) {
+    const names = C().fields(dt).map((x) => x.fieldname);
+    const pick = (list) => list.find((n) => names.includes(n));
+    return {
+      start: pick(['starts_on', 'from_date', 'start_date', 'exp_start_date', 'date', 'posting_date', 'transaction_date', 'attendance_date', 'holiday_date']),
+      end: pick(['ends_on', 'to_date', 'end_date', 'exp_end_date']),
+      title: pick(['subject', 'title', AFX.data.doctypes[dt].title_field || 'name']) || 'name',
+    };
+  }
+  const isoDay = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  function renderCalendar(view, r, state) {
     const dt = r.doctype;
     const today = new Date(AFX.data.site.server_date + 'T00:00:00');
-    const y = today.getFullYear();
-    const m = today.getMonth();
-    const first = new Date(y, m, 1);
-    const start = new Date(first);
-    start.setDate(1 - ((first.getDay() + 7) % 7));
-    const days = Array.from({ length: 42 }, (_, i) => { const d = new Date(start); d.setDate(start.getDate() + i); return d; });
-    const monthName = first.toLocaleString('en', { month: 'long', year: 'numeric' });
+    const anchor = state.calDate ? new Date(state.calDate + 'T00:00:00') : today;
+    const mode = state.calMode || 'month';
+    const cf = calendarFields(dt);
+    const events = cf.start ? realRows(dt).filter((x) => x[cf.start]).map((x) => ({ name: x.name, title: x[cf.title] || x.name, start: String(x[cf.start]).slice(0, 10), end: String(x[cf.end] || x[cf.start]).slice(0, 10) })) : [];
+    const on = (d) => { const k = isoDay(d); return events.filter((e) => e.start <= k && e.end >= k); };
+    const chips = (d) => on(d).slice(0, 3).map((e) => `<a class="afx-cal-event" href="${link.doc(dt, e.name)}" title="${esc(e.title)}">${esc(e.title)}</a>`).join('') + (on(d).length > 3 ? `<span class="afx-muted afx-small">+${on(d).length - 3} more</span>` : '');
+    let days;
+    let title;
+    if (mode === 'month') {
+      const first = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
+      const start = new Date(first);
+      start.setDate(1 - first.getDay());
+      days = Array.from({ length: 42 }, (_, i) => { const d = new Date(start); d.setDate(start.getDate() + i); return d; });
+      title = first.toLocaleString('en', { month: 'long', year: 'numeric' });
+    } else if (mode === 'week') {
+      const start = new Date(anchor);
+      start.setDate(anchor.getDate() - anchor.getDay());
+      days = Array.from({ length: 7 }, (_, i) => { const d = new Date(start); d.setDate(start.getDate() + i); return d; });
+      title = `${fmt.date(isoDay(days[0]))} – ${fmt.date(isoDay(days[6]))}`;
+    } else {
+      days = [anchor];
+      title = anchor.toLocaleString('en', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    }
     view.innerHTML = `
       ${header(dt, 'calendar', (AFX.data.records[dt] || {}).count)}
       <div class="page-viewport-canvas afx-canvas">
         <div class="saas-card afx-cal">
           <div class="card-header-bar">
-            <div class="afx-cal-nav"><button class="btn btn-secondary btn-sm btn-icon">${icon('chevron-left', 14)}</button><button class="btn btn-secondary btn-sm">Today</button><button class="btn btn-secondary btn-sm btn-icon">${icon('chevron-right', 14)}</button><h3>${esc(monthName)}</h3></div>
-            <div class="afx-seg"><button class="active">Month</button><button>Week</button><button>Day</button></div>
+            <div class="afx-cal-nav">
+              <button class="btn btn-secondary btn-sm btn-icon" data-cal-step="-1" aria-label="Previous">${icon('chevron-left', 14)}</button>
+              <button class="btn btn-secondary btn-sm" data-cal-today>Today</button>
+              <button class="btn btn-secondary btn-sm btn-icon" data-cal-step="1" aria-label="Next">${icon('chevron-right', 14)}</button>
+              <h3>${esc(title)}</h3>
+            </div>
+            <div class="afx-seg" role="group" aria-label="Calendar view">${['month', 'week', 'day'].map((m) => `<button class="${m === mode ? 'active' : ''}" data-cal-mode="${m}" aria-pressed="${m === mode}">${m[0].toUpperCase() + m.slice(1)}</button>`).join('')}</div>
           </div>
-          <div class="afx-cal-grid">
-            ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => `<div class="afx-cal-dow">${d}</div>`).join('')}
-            ${days.map((d) => `<div class="afx-cal-day ${d.getMonth() !== m ? 'is-out' : ''} ${d.toDateString() === today.toDateString() ? 'is-today' : ''}"><span class="num">${d.getDate()}</span></div>`).join('')}
+          ${cf.start ? '' : `<div class="banner-callout afx-example-note">${icon('info', 15)}<span>${esc(dt)} has no date field for a calendar.</span></div>`}
+          <div class="afx-cal-grid is-${mode}">
+            ${mode === 'day' ? '' : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => `<div class="afx-cal-dow">${d}</div>`).join('')}
+            ${days.map((d) => `<div class="afx-cal-day ${mode === 'month' && d.getMonth() !== anchor.getMonth() ? 'is-out' : ''} ${d.toDateString() === today.toDateString() ? 'is-today' : ''}"><span class="num">${d.getDate()}</span>${chips(d)}<a class="afx-cal-add" href="${link.newDoc(dt)}" aria-label="New ${esc(dt)} on ${esc(fmt.date(isoDay(d)))}">${icon('plus', 12)}</a></div>`).join('')}
           </div>
         </div>
       </div>`;
@@ -20652,35 +21137,103 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     const dt = r.doctype;
     const meta = AFX.data.doctypes[dt];
     const real = realRows(dt);
-    const rows = real.length ? real : state.example ? exampleRows(dt) : [];
+    const source = real.length ? real : state.example ? exampleRows(dt) : [];
+    const rows = query(dt, state, source).slice(0, state.pageLength || 20);
     view.innerHTML = `
       ${header(dt, 'image', (AFX.data.records[dt] || {}).count)}
       <div class="page-viewport-canvas afx-canvas">
         ${filterBar(dt, state)}
-        ${rows.length ? `<div class="afx-image-grid">${rows.map((x) => `<a class="afx-image-card" href="${link.doc(dt, x.name)}"><span class="afx-image-ph" style="--h:${AFX.hashHue(x.name)}">${esc(AFX.initials(x[meta.title_field] || x.name))}</span><b>${esc(x[meta.title_field] || x.name)}</b><small>${esc(x.name)}</small></a>`).join('')}</div>` : emptyState(dt, state.example)}
+        ${rows.length ? `<div class="afx-image-grid">${rows.map((x) => `<a class="afx-image-card" href="${link.doc(dt, x.name)}"><span class="afx-image-ph" style="--h:${AFX.hashHue(x.name)}">${esc(AFX.initials(x[meta.title_field] || x.name))}</span><b>${esc(x[meta.title_field] || x.name)}</b><small>${esc(x.name)}</small></a>`).join('')}</div>` : source.length ? noMatch() : emptyState(dt, state.example)}
       </div>`;
   }
 
   function stateFor(dt) { return store.get('list:' + dt, {}); }
   function saveState(dt, s) { store.set('list:' + dt, s); }
 
+  /* State: the URL's filters when it has any, otherwise the last ones used (the platform keeps
+     them per user in User Settings and restores them on the next visit). */
   function render(view, r) {
     if (r.view === 'list' && AFX.listOverrides && AFX.listOverrides[r.doctype]) return AFX.listOverrides[r.doctype](view, r);
-    const s =Object.assign({}, stateFor(r.doctype), r.query && Object.keys(r.query).length ? { std: r.query } : {});
+    const s = Object.assign({}, stateFor(r.doctype));
+    const q = Object.assign({}, r.query || {});
+    delete q.view;
+    if (Object.keys(q).length) {
+      const std = new Set(C().fields(r.doctype).filter((x) => x.in_standard_filter).map((x) => x.fieldname));
+      s.std = {};
+      s.filters = [];
+      Object.entries(q).forEach(([k, v]) => {
+        if (/^\[.*\]$/.test(v)) {
+          try { const [op, val] = JSON.parse(v); s.filters.push([k, op, val]); return; } catch (e) { /* plain value */ }
+        }
+        if (std.has(k)) s.std[k] = v; else s.filters.push([k, '=', v]);
+      });
+    }
     const fn = { list: renderList, report: renderReportView, tree: renderTree, kanban: renderKanban, calendar: renderCalendar, image: renderImage }[r.view] || renderList;
     fn(view, r, s);
+    syncUrl(r, s);
     wire(view, r, s, fn);
   }
 
   function wire(view, r, s, fn) {
+    const dt = r.doctype;
+    const redraw = () => { saveState(dt, s); fn(view, r, s); syncUrl(r, s); };
+    const selected = () => AFX.qsa('tbody .saas-checkbox.checked', view).map((b) => b.closest('tr').dataset.name).filter(Boolean);
     view.onclick = (e) => {
       const t = e.target;
       const ddBtn = t.closest('[data-dd]');
       if (ddBtn) { const m = ddBtn.parentElement.querySelector('.afx-menu'); AFX.qsa('.afx-menu:not([hidden])').forEach((x) => { if (x !== m) x.hidden = true; }); m.hidden = !m.hidden; e.stopPropagation(); return; }
-      if (t.closest('[data-example]')) { s.example = !s.example; saveState(r.doctype, s); return render(view, r); }
-      if (t.closest('[data-refresh]')) { render(view, r); AFX.ui.toast('Refreshed', r.doctype + ' list reloaded', 'info'); return; }
-      if (t.closest('[data-pick-cols]')) { e.preventDefault(); return pickColumns(r.doctype, () => render(view, r)); }
-      if (t.closest('[data-add-filter]')) return addFilter(r.doctype);
+      if (t.closest('[data-example]')) { s.example = !s.example; saveState(dt, s); return render(view, r); }
+      if (t.closest('[data-refresh]')) { fn(view, r, s); AFX.ui.toast('Refreshed', dt + ' list reloaded', 'info'); return; }
+      if (t.closest('[data-pick-cols]')) { e.preventDefault(); return pickColumns(dt, () => fn(view, r, s)); }
+      if (t.closest('[data-add-filter]')) return addFilter(dt, s, redraw);
+      if (t.closest('[data-clear-filters]')) { s.filters = []; s.std = {}; s.q = ''; return redraw(); }
+      if (t.closest('[data-sort-dir]')) { const cur = sortOf(dt, s); s.sort = { field: cur.field, dir: cur.dir === 'asc' ? 'desc' : 'asc' }; return redraw(); }
+      const by = t.closest('[data-sort-by]');
+      if (by) { e.preventDefault(); s.sort = { field: by.dataset.sortBy, dir: sortOf(dt, s).dir }; return redraw(); }
+      const len = t.closest('[data-page-length]');
+      if (len) { s.pageLength = +len.dataset.pageLength; return redraw(); }
+      const like = t.closest('[data-like]');
+      if (like) {
+        const set = new Set(store.get('likes:' + dt, []));
+        const n = like.dataset.like;
+        if (set.has(n)) set.delete(n); else set.add(n);
+        store.set('likes:' + dt, [...set]);
+        like.classList.toggle('is-liked', set.has(n));
+        like.setAttribute('aria-pressed', String(set.has(n)));
+        return null;
+      }
+      const bulk = t.closest('[data-bulk]');
+      if (bulk) return bulkAction(dt, bulk.dataset.bulk, selected());
+      if (t.closest('[data-group-by]')) return groupBy(dt, s, redraw);
+      if (t.closest('[data-save-report]')) return saveReport(dt, s);
+      const collapse = t.closest('[data-kanban-collapse]');
+      const archive = t.closest('[data-kanban-archive]');
+      if (collapse || archive) {
+        e.preventDefault();
+        const field = s.by || 'status';
+        const key = collapse ? 'collapsed' : 'archived';
+        const col = (collapse || archive).dataset[collapse ? 'kanbanCollapse' : 'kanbanArchive'];
+        s[key] = Object.assign({}, s[key]);
+        const list = new Set(s[key][field] || []);
+        if (list.has(col)) list.delete(col); else list.add(col);
+        s[key][field] = [...list];
+        return redraw();
+      }
+      if (t.closest('[data-kanban-restore]')) { s.archived = {}; return redraw(); }
+      const step = t.closest('[data-cal-step]');
+      if (step || t.closest('[data-cal-today]')) {
+        const mode = s.calMode || 'month';
+        const d = step ? new Date((s.calDate || AFX.data.site.server_date) + 'T00:00:00') : new Date(AFX.data.site.server_date + 'T00:00:00');
+        if (step) {
+          const k = +step.dataset.calStep;
+          if (mode === 'month') d.setMonth(d.getMonth() + k, 1);
+          else d.setDate(d.getDate() + k * (mode === 'week' ? 7 : 1));
+        }
+        s.calDate = isoDay(d);
+        return redraw();
+      }
+      const mode = t.closest('[data-cal-mode]');
+      if (mode) { s.calMode = mode.dataset.calMode; return redraw(); }
       if (t.closest('[data-tree-expand]')) { AFX.qsa('.afx-tree-node.has-kids', view).forEach((n) => n.classList.add('is-open')); return; }
       if (t.closest('[data-tree-collapse]')) { AFX.qsa('.afx-tree-node.has-kids', view).forEach((n) => n.classList.remove('is-open')); return; }
       const caret = t.closest('.afx-tree-caret');
@@ -20688,28 +21241,30 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
         const n = caret.closest('.afx-tree-node');
         n.classList.toggle('is-open');
         const open = AFX.qsa('.afx-tree-node.is-open', view).map((x) => x.dataset.node);
-        store.set('tree-open:' + r.doctype, open);
+        store.set('tree-open:' + dt, open);
         return;
       }
       if (t.closest('[data-bulk-delete]')) {
-        const n = AFX.qsa('tbody .saas-checkbox.checked', view).length;
-        return AFX.ui.confirm(`Permanently delete ${n} ${r.doctype}${n === 1 ? '' : 's'}?`, () => AFX.ui.toast('Prototype', 'Deleting is disabled in the prototype', 'warning'), 'Delete items');
+        const n = selected().length;
+        return AFX.ui.confirm(`Permanently delete ${n} ${dt}${n === 1 ? '' : 's'}?`, () => AFX.ui.toast('Prototype', 'Deleting is disabled in the prototype', 'warning'), 'Delete items');
       }
       const box = t.closest('.saas-checkbox');
       if (box && view.querySelector('.afx-list-table')) {
         setTimeout(() => {
-          const n = AFX.qsa('tbody .saas-checkbox.checked', view).length;
+          const n = selected().length;
           const bar = view.querySelector('.afx-bulk-bar');
           if (bar) { bar.hidden = !n; bar.querySelector('[data-bulk-count]').textContent = n; }
         }, 0);
       }
     };
     view.oninput = AFX.debounce((e) => {
-      if (e.target.matches('[data-q]')) { s.q = e.target.value; saveState(r.doctype, s); fn(view, r, s); const i = view.querySelector('[data-q]'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
-    }, 250);
+      if (e.target.matches('[data-q]')) { s.q = e.target.value; redraw(); const i = view.querySelector('[data-q]'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
+      if (e.target.matches('input[data-std]')) { s.std = Object.assign({}, s.std, { [e.target.dataset.std]: e.target.value }); redraw(); const i = view.querySelector(`input[data-std="${e.target.dataset.std}"]`); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
+    }, 300);
     view.onchange = (e) => {
-      if (e.target.matches('[data-std]')) { s.std = Object.assign({}, s.std, { [e.target.dataset.std]: e.target.value }); saveState(r.doctype, s); fn(view, r, s); }
-      if (e.target.matches('[data-kanban-by]')) { s.by = e.target.value; saveState(r.doctype, s); fn(view, r, s); }
+      if (e.target.matches('select[data-std]')) { s.std = Object.assign({}, s.std, { [e.target.dataset.std]: e.target.value }); redraw(); }
+      if (e.target.matches('[data-kanban-by]')) { s.by = e.target.value; redraw(); }
+      if (e.target.matches('[data-show-totals]')) { s.totals = e.target.checked; redraw(); }
     };
   }
 
@@ -20723,28 +21278,114 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     });
   }
 
-  function addFilter(dt) {
-    const all = C().fields(dt).filter((x) => !C().LAYOUT.has(x.fieldtype) && !['Table', 'HTML', 'Button'].includes(x.fieldtype));
+  /* Filter dialog: one row per condition (field, operator, value), as the platform filter area. */
+  function addFilter(dt, s, done) {
+    const all = filterFields(dt);
+    const row = (f) => {
+      const [field, op, val] = f || [all[0].fieldname, '=', ''];
+      const v = Array.isArray(val) ? val.join(', ') : val == null ? '' : String(val);
+      return `
+        <div class="afx-filter-row" data-filter-row>
+          <span class="afx-muted">Where</span>
+          <div class="afx-select"><select class="form-input" data-f="field" aria-label="Field">${all.map((x) => `<option value="${esc(x.fieldname)}" ${x.fieldname === field ? 'selected' : ''}>${esc(x.label || x.fieldname)}</option>`).join('')}</select>${icon('chevron-down', 13)}</div>
+          <div class="afx-select"><select class="form-input" data-f="op" aria-label="Condition">${OPS.map(([o, l]) => `<option value="${esc(o)}" ${o === op ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>${icon('chevron-down', 13)}</div>
+          <input class="form-input" data-f="value" placeholder="${op === 'is' ? 'set / not set' : op === 'between' || op === 'in' || op === 'not in' ? 'Values, separated by commas' : 'Value'}" value="${esc(v)}" aria-label="Value">
+          <button class="afx-icon-btn" data-filter-remove aria-label="Remove filter">${icon('x', 14)}</button>
+        </div>`;
+    };
+    const current = (s.filters || []).length ? s.filters : [null];
     AFX.ui.dialog({
-      title: 'Filters', icon: 'funnel', size: 'md',
-      body: `
-        <div class="afx-filter-rows">
-          <div class="afx-filter-row">
-            <span class="afx-muted">Where</span>
-            <div class="afx-select"><select class="form-input">${all.map((x) => `<option>${esc(x.label || x.fieldname)}</option>`).join('')}</select>${icon('chevron-down', 13)}</div>
-            <div class="afx-select"><select class="form-input">${['Equals', 'Not Equals', 'Like', 'Not Like', 'In', 'Not In', 'Is', '>', '<', '>=', '<=', 'Between', 'Timespan'].map((o) => `<option>${o}</option>`).join('')}</select>${icon('chevron-down', 13)}</div>
-            <input class="form-input" placeholder="Value">
-            <button class="afx-icon-btn" aria-label="Remove">${icon('x', 14)}</button>
-          </div>
-        </div>
-        <button class="btn btn-ghost btn-sm">${icon('plus', 13)} Add a Filter</button>`,
-      actions: [{ label: 'Clear Filters' }, { label: 'Apply Filters', primary: true, action: () => AFX.ui.toast('Filter applied', 'Filters are saved per user in List View Settings', 'info') }],
+      title: 'Filters', icon: 'funnel', size: 'md', subtitle: dt,
+      body: `<div class="afx-filter-rows" data-filter-rows>${current.map(row).join('')}</div>
+        <button class="btn btn-ghost btn-sm" data-filter-add>${icon('plus', 13)} Add a Filter</button>`,
+      onOpen: (w) => {
+        w.addEventListener('click', (e) => {
+          if (e.target.closest('[data-filter-add]')) w.querySelector('[data-filter-rows]').insertAdjacentHTML('beforeend', row());
+          const rm = e.target.closest('[data-filter-remove]');
+          if (rm) rm.closest('[data-filter-row]').remove();
+        });
+      },
+      actions: [
+        { label: 'Clear Filters', action: () => { s.filters = []; done(); } },
+        {
+          label: 'Apply Filters', primary: true,
+          action: (w) => {
+            s.filters = AFX.qsa('[data-filter-row]', w).map((rowEl) => {
+              const field = rowEl.querySelector('[data-f="field"]').value;
+              const op = rowEl.querySelector('[data-f="op"]').value;
+              let v = rowEl.querySelector('[data-f="value"]').value.trim();
+              const df = all.find((x) => x.fieldname === field) || {};
+              if (op === 'is') v = /not/i.test(v) ? 'not set' : 'set';
+              else if (!v) return null;
+              if (['in', 'not in', 'between'].includes(op)) v = v.split(',').map((x) => (df.fieldtype === 'Date' ? ymd(x) : x.trim()));
+              else if (df.fieldtype === 'Date') v = ymd(v);
+              return [field, op, v];
+            }).filter(Boolean);
+            done();
+          },
+        },
+      ],
     });
+  }
+
+  /* Report view: group rows by a field. */
+  function groupBy(dt, s, done) {
+    const fields = C().fields(dt).filter((x) => ['Select', 'Link', 'Data', 'Check', 'Date'].includes(x.fieldtype) && !x.hidden);
+    AFX.ui.dialog({
+      title: 'Group By', icon: 'layers', subtitle: dt,
+      body: `<div class="afx-form-grid is-1">${C().render({ fieldname: 'group_by', label: 'Group rows by', fieldtype: 'Select', options: fields.map((x) => x.label || x.fieldname) }, s.groupBy ? (fields.find((x) => x.fieldname === s.groupBy) || {}).label : '')}</div>`,
+      actions: [
+        { label: 'Remove Grouping', action: () => { delete s.groupBy; done(); } },
+        { label: 'Apply', primary: true, action: (w) => { const l = w.querySelector('[name="group_by"]').value; const f = fields.find((x) => (x.label || x.fieldname) === l); if (f) s.groupBy = f.fieldname; else delete s.groupBy; done(); } },
+      ],
+    });
+  }
+
+  /* Report view: save the current columns, filters, sort and grouping as a Report. */
+  function saveReport(dt, s) {
+    AFX.ui.dialog({
+      title: 'Save As', icon: 'save', subtitle: 'New Report Builder report on ' + dt,
+      body: `<div class="afx-form-grid is-1">${C().render({ fieldname: 'report_name', label: 'Report Name', fieldtype: 'Data', reqd: 1 }, '')}</div>`,
+      actions: [
+        { label: 'Cancel' },
+        {
+          label: 'Save', primary: true,
+          action: (w) => {
+            const name = w.querySelector('[name="report_name"]').value.trim();
+            if (!name) { w.querySelector('[name="report_name"]').focus(); return false; }
+            const saved = store.get('saved-reports:' + dt, []);
+            saved.push({ name, filters: s.filters || [], sort: s.sort || null, groupBy: s.groupBy || null, columns: store.get('cols:' + dt, null) });
+            store.set('saved-reports:' + dt, saved);
+            AFX.ui.toast('Report saved', `"${name}" is saved under Report (Report Builder) for ${dt}`, 'success');
+            return true;
+          },
+        },
+      ],
+    });
+  }
+
+  /* Bulk actions on the selected rows (platform list "Actions" menu). */
+  function bulkAction(dt, kind, names) {
+    const n = names.length;
+    const what = `${n || 'all'} ${dt}${n === 1 ? '' : ' records'}`;
+    const users = (AFX.data.users || []).map((u) => u.name);
+    const editable = C().fields(dt).filter((x) => !C().LAYOUT.has(x.fieldtype) && !['Table', 'Table MultiSelect', 'HTML', 'Button', 'Read Only'].includes(x.fieldtype) && !x.read_only && !x.hidden);
+    const done = (title, msg) => () => AFX.ui.toast(title, msg, 'success');
+    const D = {
+      edit: { title: 'Bulk Edit', icon: 'pencil', body: `${C().render({ fieldname: 'field', label: 'Field', fieldtype: 'Select', options: editable.map((x) => x.label || x.fieldname), reqd: 1 }, '')}${C().render({ fieldname: 'value', label: 'Value', fieldtype: 'Data' }, '')}`, ok: 'Update', msg: () => done('Updated', `${what} updated`) },
+      export: { title: 'Export', icon: 'download', body: `${C().render({ fieldname: 'file_type', label: 'File Type', fieldtype: 'Select', options: ['Excel', 'CSV'], reqd: 1 }, 'Excel')}${C().render({ fieldname: 'export_all', label: 'Export all matching rows', fieldtype: 'Check' }, n ? 0 : 1)}`, ok: 'Export', msg: () => done('Export ready', `${what} exported`) },
+      assign: { title: 'Add to ToDo', icon: 'user-plus', body: `${C().render({ fieldname: 'assign_to', label: 'Assign To', fieldtype: 'Select', options: users, reqd: 1 }, '')}${C().render({ fieldname: 'date', label: 'Complete By', fieldtype: 'Date' }, '')}${C().render({ fieldname: 'priority', label: 'Priority', fieldtype: 'Select', options: ['Low', 'Medium', 'High'] }, 'Medium')}${C().render({ fieldname: 'description', label: 'Comment', fieldtype: 'Small Text' }, '')}`, ok: 'Add', msg: () => done('Assigned', `${what} assigned`) },
+      tags: { title: 'Add Tags', icon: 'tag', body: `${C().render({ fieldname: 'tags', label: 'Tags', fieldtype: 'Data', description: 'Separate tags with commas' }, '')}`, ok: 'Add Tags', msg: () => done('Tags added', `Tags added to ${what}`) },
+      print: { title: 'Print Documents', icon: 'printer', body: `${C().render({ fieldname: 'print_format', label: 'Print Format', fieldtype: 'Select', options: ['Standard'] }, 'Standard')}${C().render({ fieldname: 'letter_head', label: 'Letter Head', fieldtype: 'Select', options: ['None'] }, 'None')}${C().render({ fieldname: 'page_size', label: 'Page Size', fieldtype: 'Select', options: ['A4', 'Letter'] }, 'A4')}`, ok: 'Print', msg: () => done('PDF ready', `${what} combined into one PDF`) },
+      submit: { title: 'Submit', icon: 'circle-check', body: `<div class="afx-msg">Submit ${what}? Submitted documents can only be cancelled, not edited.</div>`, ok: 'Submit', msg: () => done('Submitted', `${what} submitted`) },
+    }[kind];
+    if (!D) return;
+    AFX.ui.dialog({ title: D.title, icon: D.icon, subtitle: n ? `${n} selected` : dt, body: `<div class="afx-form-grid is-1">${D.body}</div>`, actions: [{ label: 'Cancel' }, { label: D.ok, primary: true, action: D.msg() }] });
   }
 
   document.addEventListener('click', (e) => { if (!e.target.closest('.afx-dd')) AFX.qsa('.afx-dd .afx-menu:not([hidden])').forEach((m) => { m.hidden = true; }); });
 
-  AFX.views.list = { render, availableViews, indicator, realRows, exampleRows, columns, cell, emptyState };
+  AFX.views.list = { render, availableViews, indicator, realRows, exampleRows, columns, cell, emptyState, query, test };
 })();
 </script>
 <script data-file="js/afx/views/form.js">
@@ -20858,7 +21499,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
         <div class="afx-side-id">
           <span class="afx-side-avatar" style="--h:${AFX.hashHue(title)}">${img ? `<img src="${esc(img)}" alt="">` : esc(AFX.initials(title))}</span>
           <div><b>${esc(title)}</b>${doc.name && doc.name !== title ? `<small class="num">${esc(doc.name)}</small>` : ''}</div>
-          <button class="afx-like" aria-label="Like">${icon('heart', 15)}</button>
+          <button class="afx-like ${(store.get('likes:' + doc.doctype, []) || []).includes(doc.name) ? 'is-liked' : ''}" data-like aria-label="Like">${icon('heart', 15)}</button>
         </div>
         ${['Assigned To|user-plus|Assign', 'Attachments|paperclip|Attach File', 'Tags|tag|Add a tag', 'Shared With|share-2|Share'].map((s) => {
           const [label, ic, act] = s.split('|');
@@ -20880,7 +21521,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
         <div class="afx-comment-box">
           <span class="afx-avatar" style="--h:${AFX.hashHue('Administrator')}">A</span>
           <div class="afx-comment-input" contenteditable="true" data-placeholder="Type a reply / comment — use @ to mention"></div>
-          <button class="btn btn-primary btn-sm" data-comment>Comment</button>
+          <button class="btn btn-primary btn-sm" data-comment disabled>Comment</button>
         </div>
         <div class="afx-timeline-head"><h3>Activity</h3><a class="btn btn-secondary btn-sm" href="#" data-new-email>${icon('mail-plus', 13)} New Email</a></div>
         <ol class="afx-timeline">
@@ -20922,13 +21563,13 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
             </div>
           </div>
           <div class="page-action-cluster">
-            ${!r.isNew && !r.single ? `<button class="btn btn-secondary btn-sm btn-icon" title="Previous (Alt+←)">${icon('chevron-left', 14)}</button><button class="btn btn-secondary btn-sm btn-icon" title="Next (Alt+→)">${icon('chevron-right', 14)}</button>` : ''}
+            ${!r.isNew && !r.single ? `<button class="btn btn-secondary btn-sm btn-icon" data-doc-nav="-1" title="Previous (Alt+←)">${icon('chevron-left', 14)}</button><button class="btn btn-secondary btn-sm btn-icon" data-doc-nav="1" title="Next (Alt+→)">${icon('chevron-right', 14)}</button>` : ''}
             ${dt === 'User' && !r.isNew ? AFX.pages.users.formButtons(doc) : ''}
-            ${!r.isNew && !r.single ? `<button class="btn btn-secondary btn-sm btn-icon" title="Print">${icon('printer', 14)}</button>` : ''}
+            ${!r.isNew && !r.single ? `<a class="btn btn-secondary btn-sm btn-icon" href="${link.print(dt, doc.name)}" title="Print">${icon('printer', 14)}</a>` : ''}
             <div class="afx-dd">
               <button class="btn btn-secondary btn-sm btn-icon" data-dd title="Menu">${icon('ellipsis', 15)}</button>
               <div class="afx-menu is-right" hidden>
-                ${r.isNew ? '' : `<a class="afx-menu-item" href="#">${icon('mail', 15)}<span>Email</span></a><a class="afx-menu-item" href="#">${icon('link', 15)}<span>Links</span></a><a class="afx-menu-item" href="#" data-duplicate>${icon('copy', 15)}<span>Duplicate</span></a><a class="afx-menu-item" href="#">${icon('pencil', 15)}<span>Rename</span></a>`}
+                ${r.isNew ? '' : `<a class="afx-menu-item" href="#" data-new-email>${icon('mail', 15)}<span>Email</span></a><a class="afx-menu-item" href="#" data-doc-links>${icon('link', 15)}<span>Links</span></a><a class="afx-menu-item" href="#" data-duplicate>${icon('copy', 15)}<span>Duplicate</span></a><a class="afx-menu-item" href="#">${icon('pencil', 15)}<span>Rename</span></a>`}
                 <a class="afx-menu-item" href="#" data-reload-doc>${icon('refresh-cw', 15)}<span>Reload</span></a>
                 <a class="afx-menu-item" href="#" data-copy-doc>${icon('copy', 15)}<span>Copy to Clipboard</span></a>
                 <div class="afx-menu-sep"></div>
@@ -21025,7 +21666,10 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
       const p = view.querySelector('[data-primary]');
       if (p && p.dataset.primary === 'Submit') { p.dataset.primary = 'Save'; p.innerHTML = `${icon('save', 14)}<span>Save</span><kbd class="afx-kbd-hint">Ctrl+S</kbd>`; }
     };
-    view.oninput = (e) => { if (e.target.closest('.afx-form-main') && !e.target.closest('.afx-comment-input')) markDirty(); };
+    view.oninput = (e) => {
+      if (e.target.closest('.afx-comment-input')) { const b = view.querySelector('[data-comment]'); if (b) b.disabled = !e.target.textContent.trim(); return; }
+      if (e.target.closest('.afx-form-main')) markDirty();
+    };
     view.onchange = (e) => {
       if (!e.target.closest('.afx-form-main')) return;
       markDirty();
@@ -21066,10 +21710,46 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
         store.set('comments:' + r.doctype + ':' + doc.name, list);
         return render(view, r);
       }
-      if (t.closest('[data-new-email]')) { e.preventDefault(); return AFX.pages.email.compose(r.doctype, doc.name); }
+      if (t.closest('[data-new-email]')) { e.preventDefault(); const m = t.closest('.afx-menu'); if (m) m.hidden = true; return AFX.pages.email.compose(r.doctype, doc.name); }
+      const nav = t.closest('[data-doc-nav]');
+      if (nav) return docNav(r, doc, +nav.dataset.docNav);
+      if (t.closest('[data-doc-links]')) { e.preventDefault(); const m = t.closest('.afx-menu'); if (m) m.hidden = true; return docLinks(r.doctype, doc.name); }
+      const like = t.closest('[data-like]');
+      if (like) {
+        const set = new Set(store.get('likes:' + r.doctype, []));
+        if (set.has(doc.name)) set.delete(doc.name); else set.add(doc.name);
+        store.set('likes:' + r.doctype, [...set]);
+        like.classList.toggle('is-liked', set.has(doc.name));
+        return null;
+      }
       const side = t.closest('[data-side-act]');
       if (side) return sideAction(side.dataset.sideAct, r, doc);
     };
+  }
+
+  /* Previous / next record in the list order (Alt+← / Alt+→). */
+  function docNav(r, doc, step) {
+    // The list's order: its filters and sort as last used (Platform uses the list view settings).
+    const names = AFX.views.list.query(r.doctype, store.get('list:' + r.doctype, {}), AFX.views.list.realRows(r.doctype) || []).map((x) => x.name);
+    const i = names.indexOf(doc.name);
+    const next = i >= 0 ? names[i + step] : null;
+    if (!next) return AFX.ui.toast(step < 0 ? 'First record' : 'Last record', `No ${step < 0 ? 'previous' : 'next'} ${r.doctype} in this list`, 'info');
+    return AFX.go(link.doc(r.doctype, next).replace(/^#\//, ''));
+  }
+
+  /* Menu → Links: DocTypes with a Link field to this one (the form's Connections). */
+  function docLinks(dt, name) {
+    const rows = [];
+    Object.keys(AFX.data.doctypes).forEach((other) => {
+      const f = (AFX.controls.fields(other) || []).filter((x) => x.fieldtype === 'Link' && x.options === dt);
+      if (f.length) rows.push({ other, fields: f.map((x) => x.label || x.fieldname) });
+    });
+    rows.sort((a, b) => a.other.localeCompare(b.other));
+    AFX.ui.dialog({
+      title: 'Linked Documents', icon: 'link', size: 'md', subtitle: `${dt} ${name || ''}`,
+      body: rows.length ? `<table class="saas-table dense"><thead><tr><th>Document Type</th><th>Linked through</th></tr></thead><tbody>${rows.slice(0, 40).map((x) => `<tr><td><a href="${link.doctype(x.other)}?${encodeURIComponent(AFX.controls.fields(x.other).find((f) => f.fieldtype === 'Link' && f.options === dt).fieldname)}=${encodeURIComponent(name || '')}">${esc(x.other)}</a></td><td class="afx-muted">${esc(x.fields.join(', '))}</td></tr>`).join('')}</tbody></table>${rows.length > 40 ? `<p class="afx-muted">and ${rows.length - 40} more</p>` : ''}` : '<div class="afx-msg">No other document type links to this one.</div>',
+      actions: [{ label: 'Close', primary: true }],
+    });
   }
 
   function sideAction(kind, r, doc) {
@@ -21096,6 +21776,51 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
       });
     }
   }
+
+  /* Print view (/desk/print/<DocType>/<name>): print format, letter head, the document on A4.
+     Platform equivalent: platform.ui.form.PrintView. */
+  function renderPrint(view, r) {
+    const dt = r.doctype;
+    const meta = AFX.data.doctypes[dt];
+    if (!meta) return AFX.pages.errors.render(view, '404');
+    const doc = docFor({ doctype: dt, name: r.name });
+    const fields = C().fields(dt).filter((f) => !C().LAYOUT.has(f.fieldtype) && !['Table', 'Table MultiSelect', 'HTML', 'Button', 'Password', 'Attach Image'].includes(f.fieldtype) && !f.hidden && !f.print_hide && doc[f.fieldname] != null && doc[f.fieldname] !== '');
+    const title = doc[meta.title_field] || doc.name || dt;
+    const val = (f) => AFX.views.list.cell(doc, f).replace(/<a [^>]*>|<\/a>/g, '');
+    const lh = store.get('print-lh', 'None');
+    view.innerHTML = `
+      <div class="page-title-banner afx-page-head">
+        <div class="page-title-row">
+          <div class="page-headline-group">
+            <h1>${esc(r.name || dt)}</h1>
+            <div class="page-caption"><a href="${link.doc(dt, r.name)}">${esc(dt)}</a><span>&middot;</span><span>Print</span></div>
+          </div>
+          <div class="page-action-cluster">
+            <div class="afx-select is-mini"><select data-print-format aria-label="Print Format"><option>Standard</option></select>${icon('chevron-down', 12)}</div>
+            <div class="afx-select is-mini"><select data-print-lh aria-label="Letter Head">${['None', AFX.data.site.company].map((o) => `<option ${o === lh ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>${icon('chevron-down', 12)}</div>
+            <a class="btn btn-secondary btn-sm" href="${link.doc('Print Settings', 'Print Settings')}">${icon('settings', 14)}<span>Settings</span></a>
+            <a class="btn btn-secondary btn-sm" href="${link.page('print-format-builder')}">${icon('pencil-ruler', 14)}<span>Customize</span></a>
+            <button class="btn btn-secondary btn-sm" data-print-pdf>${icon('file-text', 14)}<span>PDF</span></button>
+            <button class="btn btn-primary btn-sm" data-print-now>${icon('printer', 14)}<span>Print</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="page-viewport-canvas afx-canvas afx-print-canvas">
+        <article class="afx-print-page">
+          ${lh !== 'None' ? `<header class="afx-print-lh"><b>${esc(lh)}</b></header>` : ''}
+          <h2>${esc(dt)}</h2>
+          <p class="afx-print-name num">${esc(r.name || '')}${title !== r.name ? ' · ' + esc(title) : ''}</p>
+          ${doc.docstatus === 2 ? '<p class="afx-print-stamp">Cancelled</p>' : doc.docstatus === 0 && meta.flags && meta.flags.includes('u') ? '<p class="afx-print-stamp is-draft">Draft</p>' : ''}
+          <dl class="afx-print-fields">${fields.slice(0, 40).map((f) => `<dt>${esc(f.label || f.fieldname)}</dt><dd>${val(f)}</dd>`).join('') || '<dt>No values</dt><dd>—</dd>'}</dl>
+        </article>
+      </div>`;
+    view.onclick = (e) => {
+      if (e.target.closest('[data-print-now]')) { window.print(); return; }
+      if (e.target.closest('[data-print-pdf]')) AFX.ui.toast('PDF ready', `${r.name}.pdf (${view.querySelector('[data-print-format]').value})`, 'success');
+    };
+    view.onchange = (e) => { if (e.target.matches('[data-print-lh]')) { store.set('print-lh', e.target.value); renderPrint(view, r); } };
+  }
+  AFX.views.print = { render: renderPrint };
 
   // Ctrl+S saves the open form.
   window.addEventListener('keydown', (e) => {
@@ -21149,7 +21874,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
                   ${mods.map((m) => {
                     const s = d.sidebars[m.link_to];
                     const firstLink = s.items.find((i) => i.type === 'Link');
-                    return `<a class="afx-module-tile" href="${firstLink ? link.item(firstLink) : '#/desk'}" data-app-tile="${esc(a.name)}" data-sidebar="${esc(m.link_to)}">${icon(m.icon || s.icon, 20)}<span>${esc(m.title || s.label)}</span></a>`;
+                    return `<a class="afx-module-tile" href="${firstLink ? link.item(firstLink, m.link_to) : '#/desk'}" data-app-tile="${esc(a.name)}" data-sidebar="${esc(m.link_to)}">${icon(m.icon || s.icon, 20)}<span>${esc(m.title || s.label)}</span></a>`;
                   }).join('')}
                 </div>
               </section>`;
@@ -21242,8 +21967,8 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
       const area = `${line} L${VW},${VH} L0,${VH} Z`;
       return `
         <defs><linearGradient id="${id}-g${si}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:${viz(si)};stop-opacity:.18"/><stop offset="1" style="stop-color:${viz(si)};stop-opacity:0"/></linearGradient></defs>
-        <path d="${area}" class="area" fill="url(#${id}-g${si})"/>
-        <path d="${line}" class="line" style="stroke:${viz(si)}"/>`;
+        <g class="series"><path d="${area}" class="area" fill="url(#${id}-g${si})"/>
+        <path d="${line}" class="line" style="stroke:${viz(si)}"/></g>`;
     }).join('');
     const tip = JSON.stringify({ labels, sets: sets.map((s, i) => ({ name: s.name || '', values: s.values.map(Number), color: viz(i) })), max });
     return `
@@ -21266,7 +21991,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
       const v = Math.max(0, Number(s.values[i]) || 0);
       const h = (v / max) * VH;
       const x = i * slot + (slot - bw * sets.length) / 2 + si * bw;
-      return `<rect x="${x.toFixed(1)}" y="${(VH - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" style="fill:${viz(si)}"><title>${esc(l)}: ${esc(fmt.number(v, 0))}</title></rect>`;
+      return `<rect x="${x.toFixed(1)}" y="${(VH - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" style="fill:${viz(si)};--d:${i * 90}ms"><title>${esc(l)}: ${esc(fmt.number(v, 0))}</title></rect>`;
     }).join('')).join('');
     return `<div class="afx-wchart">${f.y}<div class="afx-wchart-plot"><svg viewBox="0 0 ${VW} ${VH}" preserveAspectRatio="none" aria-hidden="true"><g class="g">${f.grid}</g>${bars}</svg></div><div class="afx-wchart-x is-bars">${labels.map((l) => `<span>${esc(l)}</span>`).join('')}</div></div>${legend(sets)}`;
   }
@@ -21279,7 +22004,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
       const large = a1 - a0 > Math.PI ? 1 : 0;
       const p = `M100 100 L${(100 + 84 * Math.sin(a0)).toFixed(2)} ${(100 - 84 * Math.cos(a0)).toFixed(2)} A84 84 0 ${large} 1 ${(100 + 84 * Math.sin(a1)).toFixed(2)} ${(100 - 84 * Math.cos(a1)).toFixed(2)}Z`;
       a0 = a1;
-      return `<path d="${p}" style="fill:${viz(i)}"><title>${esc(labels[i] || '')}: ${esc(fmt.number(v, 0))}</title></path>`;
+      return `<path d="${p}" style="fill:${viz(i)};--d:${i * 220}ms"><title>${esc(labels[i] || '')}: ${esc(fmt.number(v, 0))}</title></path>`;
     }).join('');
     return `
       <div class="afx-wdonut">
@@ -21288,6 +22013,59 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
       </div>
       <div class="afx-wchart-legend">${labels.map((l, i) => `<span><i style="background:${viz(i)}"></i>${esc(l)}<b class="num">${esc(fmt.number(vals[i], 0))}</b></span>`).join('')}</div>`;
   }
+
+  /* Chart widget controls, as the platform dashboard chart: timespan, interval, filters, menu. */
+  const TIMESPANS = ['Last Year', 'Last Quarter', 'Last Month', 'Last Week', 'This Year', 'This Quarter', 'This Month'];
+  const INTERVALS = ['Yearly', 'Quarterly', 'Monthly', 'Weekly', 'Daily'];
+  function redrawChart(card) {
+    const name = card.dataset.chartName;
+    const wrap = document.createElement('div');
+    wrap.innerHTML = chartWidget(name, card.classList.contains('is-full') ? 'Full' : 'Half');
+    card.replaceWith(wrap.firstElementChild);
+  }
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest('.afx-chart-card[data-chart-name]');
+    if (!card) return;
+    const name = card.dataset.chartName;
+    const st = AFX.store.get('chart:' + name, {});
+    const dd = e.target.closest('[data-dd]');
+    if (dd) { const m = dd.parentElement.querySelector('.afx-menu'); AFX.qsa('.afx-menu:not([hidden])').forEach((x) => { if (x !== m) x.hidden = true; }); m.hidden = !m.hidden; e.stopPropagation(); return; }
+    const span = e.target.closest('[data-chart-timespan]');
+    const interval = e.target.closest('[data-chart-interval]');
+    if (span || interval) {
+      e.preventDefault();
+      if (span) st.timespan = span.dataset.chartTimespan; else st.time_interval = interval.dataset.chartInterval;
+      AFX.store.set('chart:' + name, st);
+      return redrawChart(card);
+    }
+    const act = e.target.closest('[data-chart-act]');
+    if (act) {
+      e.preventDefault();
+      if (act.dataset.chartAct === 'reset') AFX.store.del('chart:' + name);
+      redrawChart(document.querySelector(`.afx-chart-card[data-chart-name="${CSS.escape(name)}"]`));
+      AFX.ui.toast(act.dataset.chartAct === 'reset' ? 'Chart reset' : 'Chart refreshed', name, 'info');
+      return;
+    }
+    if (e.target.closest('[data-chart-filter]')) {
+      const c = AFX.data.charts[name] || {};
+      const dt = c.document_type;
+      const fields = dt && AFX.data.doctypes[dt] ? AFX.controls.fields(dt).filter((x) => x.in_standard_filter && !AFX.controls.LAYOUT.has(x.fieldtype)) : [];
+      const cur = Object.fromEntries((st.filters || []).map(([f, , v]) => [f, v]));
+      AFX.ui.dialog({
+        title: 'Set Filters for ' + (c.chart_name || name), icon: 'funnel',
+        body: fields.length ? `<div class="afx-form-grid is-2">${fields.map((f) => AFX.controls.render(Object.assign({}, f, { reqd: 0 }), cur[f.fieldname] || '')).join('')}</div>` : '<div class="afx-msg">This chart has no filters to set.</div>',
+        actions: [{ label: 'Clear', action: () => { delete st.filters; AFX.store.set('chart:' + name, st); redrawChart(card); } }, {
+          label: 'Set', primary: true,
+          action: (w) => {
+            st.filters = fields.map((f) => { const i = w.querySelector(`[name="${CSS.escape(f.fieldname)}"]`); return i && i.value ? [f.fieldname, '=', i.value] : null; }).filter(Boolean);
+            AFX.store.set('chart:' + name, st);
+            redrawChart(card);
+            AFX.ui.toast('Filters set', `${st.filters.length} filter${st.filters.length === 1 ? '' : 's'} on ${c.chart_name || name}`, 'success');
+          },
+        }],
+      });
+    }
+  });
 
   function chartWidget(name, width) {
     const c = AFX.data.charts[name] || { chart_name: name };
@@ -21311,15 +22089,33 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     } else {
       plot = lineChart(labels, sets, id);
     }
+    const st = AFX.store.get('chart:' + name, {});
+    const timespan = st.timespan || c.timespan;
+    const interval = st.time_interval || c.time_interval;
+    const nf = (st.filters || []).length;
+    const dd = (attr, current, options, label) => `
+      <div class="afx-dd">
+        <button class="btn btn-secondary btn-sm" data-dd aria-haspopup="menu">${label}</button>
+        <div class="afx-menu is-right" hidden role="menu">${options.map((o) => `<a class="afx-menu-item ${o === current ? 'is-current' : ''}" href="#" ${attr}="${esc(o)}"><span>${esc(o)}</span></a>`).join('')}</div>
+      </div>`;
     return `
-      <section class="saas-card afx-chart-card ${width === 'Full' ? 'is-full' : ''}">
+      <section class="saas-card afx-chart-card ${width === 'Full' ? 'is-full' : ''}" data-chart-name="${esc(name)}">
         <header class="card-header-bar">
-          <div><h3>${esc(c.chart_name || name)}</h3><small class="afx-muted">${esc([c.chart_type, c.document_type || c.report_name, c.timespan, c.time_interval].filter(Boolean).join(' · '))}</small></div>
+          <div><h3>${esc(c.chart_name || name)}</h3><small class="afx-muted">${esc([c.chart_type, c.document_type || c.report_name, timespan, interval].filter(Boolean).join(' · '))}</small></div>
           <div class="afx-chart-tools">
-            ${c.timespan ? `<button class="btn btn-secondary btn-sm">${esc(c.timespan)} ${icon('chevron-down', 12)}</button>` : ''}
-            ${c.time_interval ? `<button class="btn btn-secondary btn-sm">${icon('calendar-days', 12)} ${esc(c.time_interval)}</button>` : ''}
-            <button class="btn btn-secondary btn-sm btn-icon" title="Filter">${icon('funnel', 13)}</button>
-            <button class="btn btn-secondary btn-sm btn-icon" title="Menu">${icon('ellipsis', 13)}</button>
+            ${c.timespan ? dd('data-chart-timespan', timespan, TIMESPANS, `${esc(timespan)} ${icon('chevron-down', 12)}`) : ''}
+            ${c.time_interval ? dd('data-chart-interval', interval, INTERVALS, `${icon('calendar-days', 12)} ${esc(interval)}`) : ''}
+            <button class="btn btn-secondary btn-sm btn-icon ${nf ? 'afx-is-on' : ''}" data-chart-filter title="Filter${nf ? ` (${nf})` : ''}" aria-label="Filter">${icon('funnel', 13)}</button>
+            <div class="afx-dd">
+              <button class="btn btn-secondary btn-sm btn-icon" data-dd title="Menu" aria-label="Menu" aria-haspopup="menu">${icon('ellipsis', 13)}</button>
+              <div class="afx-menu is-right" hidden role="menu">
+                <a class="afx-menu-item" href="#" data-chart-act="refresh">${icon('refresh-cw', 15)}<span>Refresh</span></a>
+                <a class="afx-menu-item" href="${link.doc('Dashboard Chart', name)}">${icon('pencil', 15)}<span>Edit</span></a>
+                <a class="afx-menu-item" href="#" data-chart-act="reset">${icon('rotate-ccw', 15)}<span>Reset Chart</span></a>
+                ${c.document_type ? `<a class="afx-menu-item" href="${link.doctype(c.document_type)}">${icon('list', 15)}<span>View ${esc(c.document_type)} list</span></a>` : ''}
+                ${c.report_name ? `<a class="afx-menu-item" href="${link.report(c.report_name)}">${icon('sheet', 15)}<span>Open ${esc(c.report_name)}</span></a>` : ''}
+              </div>
+            </div>
           </div>
         </header>
         <div class="afx-chart-body">${plot}</div>
@@ -21449,7 +22245,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
         <div class="page-title-row">
           <div class="page-headline-group"><h1>${esc(r.dashboard)} Dashboard</h1><div class="page-caption"><span>${db.cards.length} number cards · ${db.charts.length} charts</span></div></div>
           <div class="page-action-cluster">
-            <button class="btn btn-secondary btn-sm">${icon('funnel', 14)}<span>Filters</span></button>
+            <button class="btn btn-secondary btn-sm ${(AFX.store.get('dbf:' + r.dashboard, []) || []).length ? 'afx-is-on' : ''}" data-db-filters>${icon('funnel', 14)}<span>Filters${(AFX.store.get('dbf:' + r.dashboard, []) || []).length ? ` (${AFX.store.get('dbf:' + r.dashboard, []).length})` : ''}</span></button>
             <button class="btn btn-secondary btn-sm" data-refresh-db>${icon('refresh-cw', 14)}<span>Refresh</span></button>
             <a class="btn btn-secondary btn-sm" href="${link.doc('Dashboard', r.dashboard)}">${icon('pencil', 14)}<span>Edit Dashboard</span></a>
           </div>
@@ -21459,7 +22255,32 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
         ${db.cards.length ? `<div class="afx-ws-row is-cards">${db.cards.map(numberCard).join('')}</div>` : ''}
         <div class="afx-ws-row is-charts">${db.charts.map((c) => chartWidget(c.chart, c.width)).join('')}</div>
       </div>`;
-    view.onclick = (e) => { if (e.target.closest('[data-refresh-db]')) AFX.ui.toast('Refreshed', 'Dashboard charts recalculated', 'info'); };
+    view.onclick = (e) => {
+      if (e.target.closest('[data-refresh-db]')) { renderDashboard(view, r); AFX.ui.toast('Refreshed', 'Dashboard charts recalculated', 'info'); }
+      if (e.target.closest('[data-db-filters]')) {
+        // Dashboard filters apply to every chart that has the field (Platform "Filters" on a dashboard).
+        const cur = Object.fromEntries((AFX.store.get('dbf:' + r.dashboard, []) || []).map(([f, , v]) => [f, v]));
+        const site = AFX.data.site;
+        AFX.ui.dialog({
+          title: 'Dashboard Filters', icon: 'funnel', subtitle: r.dashboard,
+          body: `<div class="afx-form-grid is-2">
+            ${AFX.controls.render({ fieldname: 'company', label: 'Company', fieldtype: 'Select', options: [site.company] }, cur.company || site.company)}
+            ${AFX.controls.render({ fieldname: 'fiscal_year', label: 'Fiscal Year', fieldtype: 'Select', options: [].concat(site.fiscal_year ? site.fiscal_year[0] : []) }, cur.fiscal_year || '')}
+            ${AFX.controls.render({ fieldname: 'from_date', label: 'From Date', fieldtype: 'Date' }, cur.from_date || '')}
+            ${AFX.controls.render({ fieldname: 'to_date', label: 'To Date', fieldtype: 'Date' }, cur.to_date || '')}
+          </div>`,
+          actions: [{ label: 'Clear', action: () => { AFX.store.del('dbf:' + r.dashboard); renderDashboard(view, r); } }, {
+            label: 'Apply', primary: true,
+            action: (w) => {
+              const f = ['company', 'fiscal_year', 'from_date', 'to_date'].map((k) => { const i = w.querySelector(`[name="${k}"]`); return i && i.value ? [k, '=', i.value] : null; }).filter(Boolean);
+              AFX.store.set('dbf:' + r.dashboard, f);
+              renderDashboard(view, r);
+              AFX.ui.toast('Filters applied', `${f.length} filter${f.length === 1 ? '' : 's'} on ${r.dashboard}`, 'success');
+            },
+          }],
+        });
+      }
+    };
   }
 
   AFX.views.desktop = { render: renderDesktop };
@@ -21478,20 +22299,42 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
 
   const NUM = ['Currency', 'Float', 'Int', 'Percent'];
 
-  function filterControl(f) {
+  function filterControl(f, value) {
     const df = { fieldname: f.fieldname, label: f.label, fieldtype: f.fieldtype === 'MultiSelectList' ? 'Link' : f.fieldtype, options: f.options, reqd: f.reqd };
     if (df.fieldtype === 'Select' && typeof df.options === 'string') df.options = df.options.split('\n');
-    if (df.fieldtype === 'Check') return `<div class="afx-report-filter is-check">${AFX.controls.render(df, f.default)}</div>`;
-    return `<div class="afx-report-filter ${['Break', 'Section Break', 'Column Break'].includes(df.fieldtype) ? 'is-hidden' : ''}">${AFX.controls.render(df, f.default)}</div>`;
+    if (df.fieldtype === 'Check') return `<div class="afx-report-filter is-check">${AFX.controls.render(df, value)}</div>`;
+    return `<div class="afx-report-filter ${['Break', 'Section Break', 'Column Break'].includes(df.fieldtype) ? 'is-hidden' : ''}">${AFX.controls.render(df, value)}</div>`;
+  }
+
+  const ymd = (v) => { const m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(String(v).trim()); return m ? `${m[3]}-${m[2]}-${m[1]}` : String(v).trim(); };
+
+  /* Filter values in the URL, as the platform writes them: every set value, checks as 1. */
+  function writeFilters(view, filters) {
+    const q = new URLSearchParams();
+    filters.forEach((f) => {
+      const input = view.querySelector(`.afx-report-filters [name="${CSS.escape(f.fieldname)}"]`);
+      if (!input) return;
+      if (input.type === 'checkbox') { if (input.checked) q.set(f.fieldname, '1'); return; }
+      const v = f.fieldtype === 'Date' ? ymd(input.value) : input.value.trim();
+      if (v) q.set(f.fieldname, v);
+    });
+    const s = q.toString().replace(/\+/g, '%20');
+    const h = location.hash.split('?')[0] + (s ? '?' + s : '');
+    if (h !== location.hash) history.replaceState(history.state, '', h);
   }
 
   function render(view, r) {
     const name = r.report;
     const rep = AFX.data.reports[name];
     if (!rep) return AFX.pages.errors.render(view, '404', null, { title: `Report ${name} not found`, body: 'This report does not exist or you do not have access to it.' });
+    const query = Object.assign({}, r.query);
+    delete query.view;
+    const fromUrl = Object.keys(query).length > 0;
+    const valueOf = (f) => (fromUrl ? (f.fieldtype === 'Check' ? (query[f.fieldname] === '1' ? 1 : 0) : query[f.fieldname]) : f.default);
     const filters = (rep.filters || []).filter((f) => f.fieldtype !== 'Break');
-    const cols = rep.columns || [];
-    const reqMissing = filters.filter((f) => f.reqd && (f.default === undefined || f.default === ''));
+    const hidden = new Set(AFX.store.get('report-cols:' + name, []));
+    const cols = (rep.columns || []).filter((c) => !hidden.has(c.fieldname));
+    const reqMissing = filters.filter((f) => f.reqd && (valueOf(f) === undefined || valueOf(f) === ''));
     const roles = rep.roles || [];
     view.innerHTML = `
       <div class="page-title-banner afx-page-head">
@@ -21510,23 +22353,23 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
             <div class="afx-dd">
               <button class="btn btn-secondary btn-sm" data-dd>${icon('ellipsis', 14)}<span>Menu</span></button>
               <div class="afx-menu is-right" hidden>
-                <a class="afx-menu-item" href="#">${icon('table', 15)}<span>Pick Columns</span></a>
-                <a class="afx-menu-item" href="#">${icon('chart-column', 15)}<span>Set Chart</span></a>
-                <a class="afx-menu-item" href="#">${icon('printer', 15)}<span>Print</span></a>
-                <a class="afx-menu-item" href="#">${icon('file-text', 15)}<span>PDF</span></a>
-                <a class="afx-menu-item" href="#">${icon('mail', 15)}<span>Setup Auto Email</span></a>
-                <a class="afx-menu-item" href="#">${icon('layout-dashboard', 15)}<span>Add to Workspace</span></a>
+                <a class="afx-menu-item" href="#" data-rm="columns">${icon('table', 15)}<span>Pick Columns</span></a>
+                <a class="afx-menu-item" href="#" data-rm="chart">${icon('chart-column', 15)}<span>Set Chart</span></a>
+                <a class="afx-menu-item" href="#" data-rm="print">${icon('printer', 15)}<span>Print</span></a>
+                <a class="afx-menu-item" href="#" data-rm="pdf">${icon('file-text', 15)}<span>PDF</span></a>
+                <a class="afx-menu-item" href="${link.newDoc('Auto Email Report')}?report=${encodeURIComponent(name)}">${icon('mail', 15)}<span>Setup Auto Email</span></a>
+                <a class="afx-menu-item" href="#" data-rm="workspace">${icon('layout-dashboard', 15)}<span>Add to Workspace</span></a>
                 <a class="afx-menu-item" href="${link.doc('Report', name)}">${icon('pencil', 15)}<span>Edit Report</span></a>
-                <a class="afx-menu-item" href="#">${icon('save', 15)}<span>Save As</span></a>
+                <a class="afx-menu-item" href="#" data-rm="save">${icon('save', 15)}<span>Save As</span></a>
               </div>
             </div>
-            ${rep.prepared_report ? `<button class="btn btn-secondary btn-sm">${icon('sparkles', 14)}<span>Generate New Report</span></button>` : ''}
+            ${rep.prepared_report ? `<button class="btn btn-secondary btn-sm" data-rm="generate">${icon('sparkles', 14)}<span>Generate New Report</span></button>` : ''}
             <button class="btn btn-primary btn-sm" data-export>${icon('download', 14)}<span>Export</span></button>
           </div>
         </div>
       </div>
       <div class="page-viewport-canvas afx-canvas">
-        ${filters.length ? `<div class="saas-card afx-report-filters">${filters.map(filterControl).join('')}</div>` : ''}
+        ${filters.length ? `<div class="saas-card afx-report-filters">${filters.map((f) => filterControl(f, valueOf(f))).join('')}</div>` : ''}
         ${rep.chart ? `<section class="saas-card afx-report-chart"><div class="afx-chart-placeholder">${icon('chart-column', 18)}<span>${esc(rep.chart)} chart appears here once the report has data</span></div></section>` : ''}
         <div class="table-wrapper afx-datagrid">
           ${cols.length ? `
@@ -21542,12 +22385,69 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
             </table>
           </div>` : `<div class="afx-empty">${icon('sheet', 26)}<b>${rep.needs ? 'Set filters to run this report' : 'Nothing to show'}</b><span>${rep.report_type === 'Report Builder' ? 'Report Builder report — columns come from its saved settings.' : 'The report returns its columns when it runs with data.'}</span></div>`}
         </div>
-        <div class="afx-report-foot"><span class="afx-muted">${esc(String(rep.rows || 0))} rows</span><span class="afx-muted">Execution time: 0.0 sec</span></div>
+        <div class="afx-report-foot"><span class="afx-muted">${esc(String(rep.rows || 0))} rows</span><span class="afx-muted" data-exec>Execution time: 0.0 sec</span></div>
       </div>`;
+    writeFilters(view, filters);
+
+    // Changing a filter runs the report again and updates the URL, as on the platform.
+    const rerun = () => {
+      writeFilters(view, filters);
+      const t = view.querySelector('[data-exec]');
+      if (t) t.textContent = `Execution time: ${(0.05 + Math.random() * 0.3).toFixed(2)} sec · ran ${new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+      const missing = filters.filter((f) => f.reqd && !((view.querySelector(`.afx-report-filters [name="${CSS.escape(f.fieldname)}"]`) || {}).value || '').trim());
+      const msg = view.querySelector('.afx-report-msg');
+      if (msg) msg.innerHTML = missing.length ? `${icon('funnel', 18)}<b>Please set the following filters</b><span>${missing.map((f) => esc(f.label)).join(', ')}</span>` : `${icon('sheet', 18)}<b>Nothing to show</b><span>No records match these filters in ${esc(AFX.data.site.company)}.</span>`;
+    };
+    view.onchange = (e) => { if (e.target.closest('.afx-report-filters')) rerun(); };
+
+    const menu = {
+      columns() {
+        AFX.ui.dialog({
+          title: 'Pick Columns', icon: 'table', subtitle: name,
+          body: `<div class="afx-col-pick">${(rep.columns || []).map((c) => `<label class="afx-check"><input type="checkbox" value="${esc(c.fieldname)}" ${hidden.has(c.fieldname) ? '' : 'checked'}><span class="afx-check-box">${icon('check', 12)}</span><span>${esc(c.label || c.fieldname)}</span></label>`).join('')}</div>`,
+          actions: [{ label: 'Show All', action: () => { AFX.store.del('report-cols:' + name); render(view, r); } }, { label: 'Apply', primary: true, action: (w) => { AFX.store.set('report-cols:' + name, AFX.qsa('input:not(:checked)', w).map((i) => i.value)); render(view, r); } }],
+        });
+      },
+      chart() {
+        const numeric = (rep.columns || []).filter((c) => NUM.includes(c.fieldtype));
+        AFX.ui.dialog({
+          title: 'Set Chart', icon: 'chart-column', subtitle: name,
+          body: `<div class="afx-form-grid is-1">${AFX.controls.render({ fieldname: 'chart_type', label: 'Chart Type', fieldtype: 'Select', options: ['Bar', 'Line', 'Pie', 'Donut', 'Percentage'] }, 'Bar')}${AFX.controls.render({ fieldname: 'y_field', label: 'Y Axis', fieldtype: 'Select', options: numeric.map((c) => c.label || c.fieldname) }, '')}</div>`,
+          actions: [{ label: 'Cancel' }, { label: 'Set Chart', primary: true, action: (w) => AFX.ui.toast('Chart set', `${w.querySelector('[name="chart_type"]').value} chart shown above the report once it has rows`, 'success') }],
+        });
+      },
+      print() {
+        AFX.ui.dialog({
+          title: 'Print', icon: 'printer', subtitle: name,
+          body: `<div class="afx-form-grid is-1">${AFX.controls.render({ fieldname: 'orientation', label: 'Orientation', fieldtype: 'Select', options: ['Landscape', 'Portrait'] }, 'Landscape')}${AFX.controls.render({ fieldname: 'with_letter_head', label: 'With Letter Head', fieldtype: 'Check' }, 1)}</div>`,
+          actions: [{ label: 'Cancel' }, { label: 'Print', primary: true, action: () => AFX.ui.toast('Print view ready', name + ' opens in the print dialog', 'success') }],
+        });
+      },
+      pdf() { AFX.ui.toast('PDF ready', name + '.pdf is being generated with the current filters', 'success'); },
+      workspace() {
+        const ws = Object.values(AFX.data.workspaceBySlug || {}).filter((v, i, a) => a.indexOf(v) === i).sort();
+        AFX.ui.dialog({
+          title: 'Add to Workspace', icon: 'layout-dashboard', subtitle: name,
+          body: `<div class="afx-form-grid is-1">${AFX.controls.render({ fieldname: 'workspace', label: 'Workspace', fieldtype: 'Select', options: ws, reqd: 1 }, ws[0])}</div>`,
+          actions: [{ label: 'Cancel' }, { label: 'Add', primary: true, action: (w) => AFX.ui.toast('Added to workspace', `${name} added as a shortcut to ${w.querySelector('[name="workspace"]').value}`, 'success') }],
+        });
+      },
+      save() {
+        AFX.ui.dialog({
+          title: 'Save As', icon: 'save', subtitle: 'New report based on ' + name,
+          body: `<div class="afx-form-grid is-1">${AFX.controls.render({ fieldname: 'report_name', label: 'Report Name', fieldtype: 'Data', reqd: 1 }, '')}</div>`,
+          actions: [{ label: 'Cancel' }, { label: 'Save', primary: true, action: (w) => { const v = w.querySelector('[name="report_name"]').value.trim(); if (!v) return false; AFX.ui.toast('Report saved', `"${v}" saved with the current filters and columns`, 'success'); return true; } }],
+        });
+      },
+      generate() { AFX.ui.toast('Report queued', 'A new prepared report is being generated in the background', 'info'); },
+    };
+
     view.onclick = (e) => {
       const dd = e.target.closest('[data-dd]');
       if (dd) { const m = dd.parentElement.querySelector('.afx-menu'); m.hidden = !m.hidden; e.stopPropagation(); return; }
-      if (e.target.closest('[data-run]')) AFX.ui.toast('Report refreshed', name, 'info');
+      const rm = e.target.closest('[data-rm]');
+      if (rm) { e.preventDefault(); const m = rm.closest('.afx-menu'); if (m) m.hidden = true; menu[rm.dataset.rm](); return; }
+      if (e.target.closest('[data-run]')) { rerun(); AFX.ui.toast('Report refreshed', name, 'info'); }
       if (e.target.closest('[data-export]')) {
         AFX.ui.dialog({
           title: 'Export Report: ' + name, icon: 'download',
@@ -21710,6 +22610,570 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
   }
 
   AFX.pages.errors = { render, standalone, html };
+})();
+</script>
+<script data-file="js/afx/pages/legacy.js">
+/* AFX designed screens (template data-page="…"): shared behaviour and the Purchase Order list.
+   Tab bars, table search and column sorting listen on document, so they work however the
+   screen was reached (the original bundle bound them once, to the first page loaded only).
+   Purchase Order list: status tabs, filter chips, Filter dialog, Sort menu and page length,
+   with the filters in the URL as on the platform: /desk/purchase-order?status=To%20Bill,
+   ?status=["in",["To Receive and Bill","To Receive"]], ?supplier=…&transaction_date=[">=","2026-08-15"].
+   Platform equivalent: platform.views.ListView (filter area, sort selector, list settings). */
+(function () {
+  'use strict';
+  const AFX = window.AFX;
+  const { esc, icon, store } = AFX;
+
+  /* ---------- Tab bars: .page-nav-tabs / .tabs with optional [data-tab] → [data-panel] ---------- */
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.page-nav-tabs button, .tabs button');
+    if (!btn || btn.closest('#afxView')) return;
+    const bar = btn.closest('.page-nav-tabs, .tabs');
+    bar.querySelectorAll('button').forEach((b) => {
+      b.classList.toggle('active', b === btn);
+      b.classList.toggle('on', b === btn);
+      b.setAttribute('aria-selected', String(b === btn));
+    });
+    const panel = btn.dataset.tab;
+    if (panel) AFX.qsa('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== panel; });
+  });
+
+  /* ---------- Table search: <input data-filter="#tableId"> ---------- */
+  document.addEventListener('input', (e) => {
+    const input = e.target.closest('input[data-filter]');
+    if (!input) return;
+    if (input.dataset.filter === '#poTable') return po.apply();
+    const table = document.querySelector(input.dataset.filter);
+    if (!table) return;
+    const q = input.value.toLowerCase().trim();
+    let n = 0;
+    table.querySelectorAll('tbody tr').forEach((row) => {
+      const hit = !q || row.textContent.toLowerCase().includes(q);
+      row.style.display = hit ? '' : 'none';
+      if (hit) n++;
+    });
+    const count = document.querySelector('[data-count]');
+    if (count && count.dataset.count) count.textContent = count.dataset.count.replace('{n}', n);
+  });
+
+  /* ---------- Column sorting: th.sortable in .saas-table / .data-table ---------- */
+  function sortValue(cell) {
+    return cell ? (cell.dataset.sort !== undefined ? cell.dataset.sort : cell.textContent.trim()) : '';
+  }
+  function sortRows(tbody, get, desc) {
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    rows.sort((a, b) => {
+      const va = get(a);
+      const vb = get(b);
+      const na = parseFloat(String(va).replace(/[^0-9.-]/g, ''));
+      const nb = parseFloat(String(vb).replace(/[^0-9.-]/g, ''));
+      const r = !isNaN(na) && !isNaN(nb) ? na - nb : String(va).localeCompare(String(vb));
+      return desc ? -r : r;
+    });
+    rows.forEach((r) => tbody.appendChild(r));
+  }
+  function addSortArrows(root) {
+    AFX.qsa('table.saas-table th.sortable, table.data-table th.sortable', root || document).forEach((th) => {
+      if (!th.querySelector('.sort-arrow')) th.insertAdjacentHTML('beforeend', '<span class="sort-arrow">▲</span>');
+    });
+  }
+  document.addEventListener('click', (e) => {
+    const th = e.target.closest('table.saas-table th.sortable, table.data-table th.sortable');
+    if (!th) return;
+    const table = th.closest('table');
+    const tbody = table.querySelector('tbody');
+    if (!tbody) return;
+    const col = Array.prototype.indexOf.call(th.parentNode.children, th);
+    const desc = th.classList.contains('asc');
+    AFX.qsa('th.sortable', table).forEach((h) => h.classList.remove('asc', 'desc'));
+    th.classList.add(desc ? 'desc' : 'asc');
+    sortRows(tbody, (tr) => sortValue(tr.children[col]), desc);
+  });
+  document.addEventListener('afx:rendered', () => addSortArrows(document.getElementById('afxView')));
+
+  /* ---------- Purchase Order list ---------- */
+  const PO_STATUS = { 'to receive & bill': 'To Receive and Bill', 'to bill': 'To Bill', 'to receive': 'To Receive', fulfilled: 'Completed', cancelled: 'Cancelled', draft: 'Draft' };
+  const PO_BADGE = { 'To Receive and Bill': 'blue', 'To Receive': 'blue', 'To Bill': 'yellow', Completed: 'green', Cancelled: 'red', Draft: 'neutral', 'On Hold': 'yellow', Closed: 'neutral' };
+  const PO_TABS = [
+    { label: 'All Orders', status: null },
+    { label: 'To Receive', status: ['in', ['To Receive and Bill', 'To Receive']] },
+    { label: 'To Bill', status: 'To Bill' },
+    { label: 'Fulfilled', status: 'Completed' },
+    { label: 'Drafts', status: 'Draft' },
+  ];
+  const PO_SORTS = [
+    { field: 'transaction_date', label: 'Order Date' },
+    { field: 'grand_total', label: 'Grand Total' },
+    { field: 'supplier', label: 'Supplier' },
+    { field: 'name', label: 'ID' },
+    { field: 'total_qty', label: 'Lines' },
+  ];
+  const COMPANY = 'Afintrix (Demo)';
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const ymd = (s) => {
+    const m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(String(s).trim());
+    return m ? `${m[3]}-${m[2]}-${m[1]}` : String(s).trim();
+  };
+
+  /* Orders as data, read from the designed table (also used by the form for a named order). */
+  function poRows(root) {
+    const scope = root || (document.querySelector('template[data-page="list"]') || {}).content;
+    if (!scope) return [];
+    return AFX.qsa('#poTable tbody tr', scope).map((tr) => {
+      const td = tr.children;
+      const d = sortValue(td[3]);
+      return {
+        tr,
+        name: td[1].textContent.trim(),
+        supplier: (td[2].querySelector('span:last-child') || td[2]).textContent.trim(),
+        transaction_date: `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}`,
+        status: PO_STATUS[td[4].textContent.trim().toLowerCase()] || td[4].textContent.trim(),
+        total_qty: Number(td[5].textContent.trim()) || 0,
+        grand_total: parseFloat(td[6].textContent.replace(/[^0-9.]/g, '')) || 0,
+        company: COMPANY,
+      };
+    });
+  }
+
+  function matches(rec, field, v) {
+    const val = rec[field];
+    if (!Array.isArray(v)) return String(val) === String(v);
+    const [op, arg] = v;
+    switch (op) {
+      case 'in': return arg.includes(val);
+      case 'not in': return !arg.includes(val);
+      case '!=': return String(val) !== String(arg);
+      case '>=': return val >= arg;
+      case '<=': return val <= arg;
+      case '>': return val > arg;
+      case '<': return val < arg;
+      case 'Between': return val >= arg[0] && val <= arg[1];
+      case 'like': return String(val).toLowerCase().includes(String(arg).replace(/%/g, '').toLowerCase());
+      default: return String(val) === String(arg);
+    }
+  }
+
+  const LABELS = { status: 'Status', supplier: 'Supplier', company: 'Company', transaction_date: 'Order Date', grand_total: 'Grand Total' };
+  function chipText(field, v) {
+    const label = LABELS[field] || field;
+    if (!Array.isArray(v)) return `${label}: ${v}`;
+    const [op, arg] = v;
+    const tab = field === 'status' && PO_TABS.find((t) => same(t.status, v));
+    if (tab) return `${label}: ${tab.label}`;
+    if (op === 'in') return `${label}: ${arg.join(' or ')}`;
+    if (op === 'Between') return `${label}: ${arg.map(AFX.fmt.date).join(' – ')}`;
+    const shown = field === 'transaction_date' ? AFX.fmt.date(arg) : field === 'grand_total' ? AFX.fmt.number(arg) : arg;
+    return `${label} ${op} ${shown}`;
+  }
+
+  const po = {
+    state: null,
+
+    enhance(r) {
+      const page = document.querySelector('[data-section="list"]');
+      if (!page) return;
+      const saved = store.get('po-list', {});
+      const filters = {};
+      Object.entries(r.query || {}).forEach(([k, v]) => {
+        if (k === 'view') return;
+        filters[k] = /^\[.*\]$/.test(v) ? JSON.parse(v) : v;
+      });
+      // No filters in the URL: the last ones used (the platform keeps them per user).
+      const fromUrl = Object.keys(filters).length > 0;
+      po.state = { filters: fromUrl ? filters : Object.assign({}, saved.filters), sort: saved.sort || { field: 'transaction_date', dir: 'desc' }, pageLength: saved.pageLength || 20 };
+
+      // Order links open the order, as in the platform list (/desk/purchase-order/<name>).
+      po.rows().forEach((rec) => {
+        const a = rec.tr.querySelector('.primary-ref a');
+        if (a) a.setAttribute('href', AFX.link.doc('Purchase Order', rec.name));
+        rec.tr.dataset.name = rec.name;
+      });
+      AFX.qsa('a[href="form.html"]', page).forEach((a) => a.setAttribute('href', AFX.link.newDoc('Purchase Order')));
+
+      // Status tabs.
+      const tabs = page.querySelector('.page-nav-tabs');
+      tabs.setAttribute('role', 'tablist');
+      tabs.setAttribute('aria-label', 'Status');
+      AFX.qsa('button', tabs).forEach((b, i) => { b.dataset.poTab = i; b.setAttribute('role', 'tab'); });
+
+      // Chips area and toolbar buttons.
+      const toolbar = page.querySelector('input[data-filter="#poTable"]').closest('.saas-card');
+      const chipBox = toolbar.querySelector('.chip-remove-btn').closest('div');
+      chipBox.setAttribute('data-po-chips', '');
+      const tools = toolbar.querySelector('[data-selcount]').parentElement;
+      const [filterBtn, sortBtn] = AFX.qsa('button', tools);
+      filterBtn.setAttribute('data-po-filter', '');
+      sortBtn.outerHTML = `
+        <button class="btn btn-secondary btn-sm btn-icon" data-po-dir title="Toggle sort order"></button>
+        <div class="afx-dd">
+          <button class="btn btn-secondary btn-sm" data-po-sort aria-haspopup="menu"></button>
+          <div class="afx-menu is-right" hidden role="menu">${PO_SORTS.map((s) => `<a class="afx-menu-item" href="#" role="menuitem" data-po-sort-by="${s.field}"><span>${esc(s.label)}</span></a>`).join('')}</div>
+        </div>`;
+
+      // Page length (20 / 100 / 500), as in the platform list footer.
+      AFX.qsa('button', page.querySelector('[data-count]').parentElement).forEach((b) => { b.dataset.poLength = b.textContent.trim(); });
+
+      page.onclick = po.click;
+      po.apply();
+    },
+
+    rows() { return poRows(document); },
+
+    url() {
+      const q = new URLSearchParams();
+      Object.entries(po.state.filters).forEach(([k, v]) => q.set(k, Array.isArray(v) ? JSON.stringify(v) : v));
+      const s = q.toString().replace(/\+/g, '%20');
+      // The path on screen, so the shell in it (/desk/buying/purchase-order) is kept.
+      const base = location.hash.split('?')[0];
+      return (/\/purchase-order$/.test(base) ? base : '#/desk/purchase-order') + (s ? '?' + s : '');
+    },
+
+    apply() {
+      const page = document.querySelector('[data-section="list"]');
+      if (!page || !po.state) return;
+      const { filters, sort, pageLength } = po.state;
+      const q = (page.querySelector('input[data-filter="#poTable"]').value || '').toLowerCase().trim();
+      const all = po.rows();
+      const shown = all.filter((rec) => Object.entries(filters).every(([k, v]) => matches(rec, k, v)) && (!q || rec.tr.textContent.toLowerCase().includes(q)));
+
+      // Rows: filter, sort, page length.
+      const tbody = page.querySelector('#poTable tbody');
+      AFX.qsa('tr.afx-po-empty', tbody).forEach((x) => x.remove());
+      const byName = Object.fromEntries(all.map((rec) => [rec.name, rec]));
+      sortRows(tbody, (tr) => (byName[tr.dataset.name] || {})[sort.field] || '', sort.dir === 'desc');
+      const visible = shown.slice(0, pageLength).map((rec) => rec.name);
+      all.forEach((rec) => { rec.tr.style.display = visible.includes(rec.name) ? '' : 'none'; });
+      if (!shown.length) {
+        tbody.insertAdjacentHTML('beforeend', `<tr class="afx-po-empty"><td colspan="10" style="text-align:center;padding:36px 16px;color:var(--ink-muted)">No Purchase Order matches these filters. <a href="#" data-po-clear-all>Clear filters</a></td></tr>`);
+      }
+      AFX.qsa('th.sortable', page).forEach((h) => h.classList.remove('asc', 'desc'));
+
+      // Tabs: the one whose status filter is active, with live counts.
+      AFX.qsa('[data-po-tab]', page).forEach((b) => {
+        const t = PO_TABS[+b.dataset.poTab];
+        const on = same(t.status, filters.status === undefined ? null : filters.status);
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-selected', String(on));
+        const n = all.filter((rec) => !t.status || matches(rec, 'status', t.status)).length;
+        const c = b.querySelector('.tab-count');
+        if (c) c.textContent = n;
+      });
+
+      // Chips, one per filter, removable.
+      page.querySelector('[data-po-chips]').innerHTML = Object.entries(filters).map(([k, v]) => `
+        <span class="status-badge ${k === 'company' ? 'neutral' : 'blue'}">
+          <span>${esc(chipText(k, v))}</span>
+          <button class="chip-remove-btn" data-po-clear="${esc(k)}" aria-label="Remove filter ${esc(LABELS[k] || k)}">&times;</button>
+        </span>`).join('');
+
+      // Sort controls.
+      const s = PO_SORTS.find((x) => x.field === sort.field) || PO_SORTS[0];
+      page.querySelector('[data-po-sort]').innerHTML = `Sort: ${esc(s.label)} &#9662;`;
+      const dir = page.querySelector('[data-po-dir]');
+      dir.innerHTML = icon(sort.dir === 'asc' ? 'arrow-up-narrow-wide' : 'arrow-down-wide-narrow', 14);
+      dir.title = sort.dir === 'asc' ? 'Ascending' : 'Descending';
+      AFX.qsa('[data-po-sort-by]', page).forEach((a) => a.classList.toggle('is-current', a.dataset.poSortBy === sort.field));
+
+      // Totals and counts follow the filtered rows.
+      const foot = page.querySelector('#poTable tfoot tr');
+      if (foot) {
+        foot.children[1].innerHTML = `Total Procurement Commitment &middot; ${shown.length} Order${shown.length === 1 ? '' : 's'}`;
+        foot.children[2].textContent = shown.reduce((a, rec) => a + rec.total_qty, 0);
+        foot.children[3].textContent = AFX.fmt.number(shown.reduce((a, rec) => a + rec.grand_total, 0));
+      }
+      const count = page.querySelector('[data-count]');
+      count.textContent = `Showing ${Math.min(shown.length, pageLength)} of ${shown.length} order${shown.length === 1 ? '' : 's'}${shown.length !== all.length ? ` (${all.length} in total)` : ''}`;
+      AFX.qsa('[data-po-length]', page).forEach((b) => {
+        const on = +b.dataset.poLength === pageLength;
+        b.classList.toggle('btn-secondary', on);
+        b.classList.toggle('btn-ghost', !on);
+      });
+
+      if (/\/purchase-order$/.test(location.hash.split('?')[0]) && location.hash !== po.url()) history.replaceState(null, '', po.url());
+      store.set('po-list', { filters, sort, pageLength });
+    },
+
+    click(e) {
+      const t = e.target;
+      const tab = t.closest('[data-po-tab]');
+      if (tab) {
+        const st = PO_TABS[+tab.dataset.poTab].status;
+        if (st) po.state.filters.status = st; else delete po.state.filters.status;
+        return po.apply();
+      }
+      const clear = t.closest('[data-po-clear]');
+      if (clear) { delete po.state.filters[clear.dataset.poClear]; return po.apply(); }
+      if (t.closest('[data-po-clear-all]')) {
+        e.preventDefault();
+        po.state.filters = {};
+        document.querySelector('input[data-filter="#poTable"]').value = '';
+        return po.apply();
+      }
+      if (t.closest('[data-po-filter]')) return po.filterDialog();
+      if (t.closest('[data-po-dir]')) { po.state.sort.dir = po.state.sort.dir === 'asc' ? 'desc' : 'asc'; return po.apply(); }
+      const sortBtn = t.closest('[data-po-sort]');
+      if (sortBtn) {
+        e.stopPropagation();
+        const m = sortBtn.nextElementSibling;
+        m.hidden = !m.hidden;
+        return null;
+      }
+      const by = t.closest('[data-po-sort-by]');
+      if (by) {
+        e.preventDefault();
+        po.state.sort.field = by.dataset.poSortBy;
+        by.closest('.afx-menu').hidden = true;
+        return po.apply();
+      }
+      const len = t.closest('[data-po-length]');
+      if (len) { po.state.pageLength = +len.dataset.poLength; return po.apply(); }
+      return null;
+    },
+
+    filterDialog() {
+      const f = po.state.filters;
+      const rows = po.rows();
+      const suppliers = [...new Set(rows.map((x) => x.supplier))].sort();
+      const statuses = AFX.controls.fields('Purchase Order').find((x) => x.fieldname === 'status').options;
+      const dateFrom = Array.isArray(f.transaction_date) ? (f.transaction_date[0] === 'Between' ? f.transaction_date[1][0] : f.transaction_date[0] === '>=' ? f.transaction_date[1] : '') : '';
+      const dateTo = Array.isArray(f.transaction_date) ? (f.transaction_date[0] === 'Between' ? f.transaction_date[1][1] : f.transaction_date[0] === '<=' ? f.transaction_date[1] : '') : '';
+      const minTotal = Array.isArray(f.grand_total) && f.grand_total[0] === '>=' ? f.grand_total[1] : '';
+      const C = AFX.controls;
+      AFX.ui.dialog({
+        title: 'Filters', icon: 'funnel', size: 'md', subtitle: 'Purchase Order · standard filters',
+        body: `
+          <div class="afx-form-grid is-2">
+            ${C.render({ fieldname: 'supplier', label: 'Supplier', fieldtype: 'Select', options: suppliers }, typeof f.supplier === 'string' ? f.supplier : '')}
+            ${C.render({ fieldname: 'status', label: 'Status', fieldtype: 'Select', options: statuses }, typeof f.status === 'string' ? f.status : '')}
+            ${C.render({ fieldname: 'date_from', label: 'Order Date From', fieldtype: 'Date' }, dateFrom)}
+            ${C.render({ fieldname: 'date_to', label: 'Order Date To', fieldtype: 'Date' }, dateTo)}
+            ${C.render({ fieldname: 'min_total', label: 'Grand Total at least', fieldtype: 'Float' }, minTotal)}
+            ${C.render({ fieldname: 'company', label: 'Company', fieldtype: 'Select', options: [COMPANY] }, f.company || '')}
+          </div>`,
+        actions: [
+          { label: 'Clear Filters', action: () => { po.state.filters = {}; po.apply(); } },
+          {
+            label: 'Apply Filters', primary: true,
+            action: (w) => {
+              const v = (n) => (w.querySelector(`[name="${n}"]`) || {}).value || '';
+              const next = {};
+              if (v('company')) next.company = v('company');
+              if (v('supplier')) next.supplier = v('supplier');
+              if (v('status')) next.status = v('status');
+              else if (Array.isArray(f.status)) next.status = f.status;
+              const a = v('date_from') ? ymd(v('date_from')) : '';
+              const b = v('date_to') ? ymd(v('date_to')) : '';
+              if (a && b) next.transaction_date = ['Between', [a, b]];
+              else if (a) next.transaction_date = ['>=', a];
+              else if (b) next.transaction_date = ['<=', b];
+              const min = parseFloat(v('min_total').replace(/,/g, ''));
+              if (!isNaN(min)) next.grand_total = ['>=', min];
+              po.state.filters = next;
+              po.apply();
+            },
+          },
+        ],
+      });
+    },
+  };
+
+  /* ---------- Purchase Order form: a named order shows that order's header ---------- */
+  function formEnhance(r) {
+    const name = decodeURIComponent((r.path || '').split('/')[2] || '');
+    const page = document.querySelector('[data-section="form"]');
+    if (!page) return;
+    AFX.qsa('a[href="list.html"]', page).forEach((a) => a.setAttribute('href', AFX.link.doctype('Purchase Order')));
+    if (!name || /^new(-|$)/.test(name)) return;
+    const rec = poRows().find((x) => x.name === name);
+    const h1 = page.querySelector('h1');
+    if (h1) h1.textContent = name;
+    const badge = page.querySelector('.page-caption .status-badge');
+    if (badge && rec) {
+      badge.className = `status-badge ${PO_BADGE[rec.status] || 'neutral'}`;
+      badge.textContent = rec.status;
+    }
+    document.title = name + ' · Afintrix';
+  }
+
+  const byText = (root, sel, text) => AFX.qsa(sel, root).find((b) => b.textContent.replace(/\s+/g, ' ').trim().startsWith(text));
+
+  /* Trial Balance: the statement tabs open those reports; option chips can be removed; density menu. */
+  const STATEMENTS = { 'Profit & Loss': 'Profit and Loss Statement', 'Balance Sheet': 'Balance Sheet', 'Cash Flow Statement': 'Cash Flow' };
+  function reportEnhance() {
+    const page = document.querySelector('[data-section="report"]') || document.querySelector('.app');
+    if (!page) return;
+    AFX.qsa('.page-nav-tabs button', page).forEach((b) => {
+      const target = STATEMENTS[b.textContent.trim()];
+      if (target && AFX.data.reports[target]) b.dataset.goReport = target;
+    });
+    const compact = byText(page, 'button', 'Compact View');
+    if (compact) {
+      compact.outerHTML = `
+        <div class="afx-dd">
+          <button class="btn btn-secondary btn-sm" data-dd aria-haspopup="menu" data-density-label>Comfortable View &#9662;</button>
+          <div class="afx-menu is-right" hidden role="menu">
+            <a class="afx-menu-item is-current" href="#" data-density="comfortable"><span>Comfortable View</span></a>
+            <a class="afx-menu-item" href="#" data-density="compact"><span>Compact View</span></a>
+          </div>
+        </div>`;
+    }
+    page.addEventListener('click', (e) => {
+      const go = e.target.closest('[data-go-report]');
+      if (go) return AFX.go(AFX.link.report(go.dataset.goReport).replace(/^#\//, ''));
+      const dd = e.target.closest('[data-dd]');
+      if (dd) { const m = dd.parentElement.querySelector('.afx-menu'); m.hidden = !m.hidden; e.stopPropagation(); return null; }
+      const den = e.target.closest('[data-density]');
+      if (den) {
+        e.preventDefault();
+        const table = document.getElementById('tbTable');
+        if (table) table.classList.toggle('dense', den.dataset.density === 'compact');
+        AFX.qsa('[data-density]', page).forEach((a) => a.classList.toggle('is-current', a === den));
+        page.querySelector('[data-density-label]').innerHTML = `${den.textContent.trim()} &#9662;`;
+        den.closest('.afx-menu').hidden = true;
+        return null;
+      }
+      const chipX = e.target.closest('.filter-chip-row .chip-remove-btn');
+      if (chipX) {
+        const chip = chipX.closest('.status-badge');
+        const label = chip.textContent.replace('×', '').trim();
+        chip.remove();
+        AFX.ui.toast('Option removed', `${label} · statement recalculated`, 'info');
+      }
+      return null;
+    });
+  }
+
+  /* Purchase Order form: Add Item appends a row; ✎ edits a row (Item, Warehouse, Qty, UOM, Rate). */
+  function poFormItems(page) {
+    const add = byText(page, 'button', '＋ Add Item');
+    const card = add && add.closest('.saas-card');
+    const tbody = card && card.querySelector('table tbody');
+    if (!tbody) return;
+    const num = (v) => parseFloat(String(v).replace(/,/g, '')) || 0;
+    const recount = () => {
+      AFX.qsa('tr', tbody).forEach((tr, i) => { tr.children[0].textContent = i + 1; });
+      const badge = card.querySelector('.card-header-bar .status-badge');
+      if (badge) badge.textContent = `${tbody.children.length} SKU${tbody.children.length === 1 ? '' : 's'} Specified`;
+    };
+    const editRow = (tr) => {
+      const td = tr.children;
+      const C = AFX.controls;
+      AFX.ui.dialog({
+        title: `Editing Row #${td[0].textContent.trim()}`, icon: 'pencil', subtitle: 'Purchase Order Item',
+        body: `<div class="afx-form-grid is-2">
+          ${C.render({ fieldname: 'item', label: 'Item', fieldtype: 'Data', reqd: 1 }, td[1].textContent.trim())}
+          ${C.render({ fieldname: 'warehouse', label: 'Warehouse', fieldtype: 'Data' }, td[2].textContent.trim())}
+          ${C.render({ fieldname: 'qty', label: 'Quantity', fieldtype: 'Float', reqd: 1 }, num(td[3].textContent))}
+          ${C.render({ fieldname: 'uom', label: 'UOM', fieldtype: 'Data' }, td[4].textContent.trim())}
+          ${C.render({ fieldname: 'rate', label: 'Rate', fieldtype: 'Float' }, num(td[5].textContent))}
+        </div>`,
+        actions: [
+          { label: 'Delete Row', danger: true, action: () => { tr.remove(); recount(); } },
+          {
+            label: 'Update', primary: true,
+            action: (w) => {
+              const v = (n) => w.querySelector(`[name="${n}"]`).value;
+              td[1].textContent = v('item');
+              td[2].textContent = v('warehouse');
+              td[3].textContent = num(v('qty'));
+              td[4].textContent = v('uom');
+              td[5].textContent = AFX.fmt.number(num(v('rate')));
+              td[6].textContent = AFX.fmt.number(num(v('qty')) * num(v('rate')));
+            },
+          },
+        ],
+      });
+    };
+    add.addEventListener('click', () => {
+      tbody.insertAdjacentHTML('beforeend', `<tr><td class="numeric"></td><td style="font-weight:700"></td><td>Stores - AD</td><td class="numeric">1</td><td>Nos</td><td class="numeric">0.00</td><td class="numeric" style="font-weight:700">0.00</td><td style="text-align:center;color:var(--ink-muted);cursor:pointer" data-po-edit>&#9998;</td></tr>`);
+      recount();
+      editRow(tbody.lastElementChild);
+    });
+    AFX.qsa('tr > td:last-child', tbody).forEach((td) => { if (td.textContent.trim() === '✎') { td.dataset.poEdit = ''; td.setAttribute('role', 'button'); td.setAttribute('aria-label', 'Edit row'); } });
+    tbody.addEventListener('click', (e) => { const ed = e.target.closest('[data-po-edit]'); if (ed) editRow(ed.closest('tr')); });
+  }
+
+  /* Purchase Order form: Upload Batch adds item rows from a CSV. */
+  function poFormUpload(page) {
+    const btn = byText(page, 'button', 'Upload Batch');
+    if (!btn) return;
+    btn.addEventListener('click', () => AFX.ui.dialog({
+      title: 'Upload Batch', icon: 'upload', subtitle: 'Item rows from a CSV: Item Code, Quantity, Rate',
+      body: '<div class="afx-form-grid is-1"><input type="file" accept=".csv,text/csv" class="form-input" data-batch-file></div>',
+      actions: [{ label: 'Cancel' }, {
+        label: 'Upload', primary: true,
+        action: (w) => {
+          const f = w.querySelector('[data-batch-file]').files[0];
+          if (!f) { AFX.ui.toast('No file', 'Choose a CSV file first', 'warning'); return false; }
+          const rd = new FileReader();
+          rd.onload = () => { const n = String(rd.result).split(/\r?\n/).filter(Boolean).length - 1; AFX.ui.toast('Batch uploaded', `${Math.max(n, 0)} item rows added to the order`, 'success'); };
+          rd.readAsText(f);
+          return true;
+        },
+      }],
+    }));
+  }
+
+  /* Employee record: previous / next record and the record actions menu. */
+  function recordEnhance(r) {
+    const page = document.querySelector('[data-section="record"]') || document.querySelector('.app');
+    if (!page) return;
+    const name = decodeURIComponent((r.path || '').split('/')[2] || '');
+    const names = AFX.views.list.realRows('Employee').map((x) => x.name);
+    const step = (k) => {
+      const i = names.indexOf(name);
+      const next = i >= 0 ? names[i + k] : null;
+      if (next) return AFX.go(AFX.link.doc('Employee', next).replace(/^#\//, ''));
+      return AFX.ui.toast(k < 0 ? 'First record' : 'Last record', `No ${k < 0 ? 'previous' : 'next'} Employee in this list`, 'info');
+    };
+    const prev = page.querySelector('[title="Previous record"]');
+    const next = page.querySelector('[title="Next record"]');
+    if (prev) prev.addEventListener('click', () => step(-1));
+    if (next) next.addEventListener('click', () => step(1));
+    const more = page.querySelector('[title="Record actions"]');
+    if (more) {
+      more.outerHTML = `
+        <div class="afx-dd">
+          <button class="btn btn-icon btn-sm" data-dd title="Record actions" aria-haspopup="menu">&#8943;</button>
+          <div class="afx-menu is-right" hidden role="menu">
+            <a class="afx-menu-item" href="${AFX.link.print('Employee', name)}">${icon('printer', 15)}<span>Print</span></a>
+            <a class="afx-menu-item" href="#" data-rec="email">${icon('mail', 15)}<span>Email</span></a>
+            <a class="afx-menu-item" href="${AFX.link.newDoc('Employee')}">${icon('copy', 15)}<span>Duplicate</span></a>
+            <a class="afx-menu-item" href="${AFX.link.doctype('Salary Slip')}?employee=${encodeURIComponent(name)}">${icon('receipt', 15)}<span>Salary Slips</span></a>
+            <a class="afx-menu-item" href="${AFX.link.doctype('Leave Application')}?employee=${encodeURIComponent(name)}">${icon('calendar-days', 15)}<span>Leave Applications</span></a>
+            <div class="afx-menu-sep"></div>
+            <a class="afx-menu-item is-danger" href="#" data-rec="delete">${icon('trash-2', 15)}<span>Delete</span></a>
+          </div>
+        </div>`;
+    }
+    page.addEventListener('click', (e) => {
+      const dd = e.target.closest('[data-dd]');
+      if (dd) { const m = dd.parentElement.querySelector('.afx-menu'); m.hidden = !m.hidden; e.stopPropagation(); return; }
+      const act = e.target.closest('[data-rec]');
+      if (!act) return;
+      e.preventDefault();
+      act.closest('.afx-menu').hidden = true;
+      if (act.dataset.rec === 'email') AFX.pages.email.compose('Employee', name);
+      if (act.dataset.rec === 'delete') AFX.ui.confirm(`Permanently delete Employee <b>${esc(name)}</b>?`, () => AFX.ui.toast('Prototype', 'Deleting is disabled in the prototype', 'warning'), 'Delete');
+    });
+  }
+
+  /* Called by the router after a designed screen is mounted. */
+  function enhance(r) {
+    addSortArrows(document);
+    if (r.page === 'list') po.enhance(r);
+    if (r.page === 'form') {
+      const page = document.querySelector('[data-section="form"]') || document;
+      formEnhance(r);
+      poFormUpload(page);
+      poFormItems(page);
+    }
+    if (r.page === 'report') reportEnhance();
+    if (r.page === 'record') recordEnhance(r);
+  }
+
+  AFX.pages.legacy = { enhance, poRows, po };
 })();
 </script>
 <script data-file="js/afx/pages/login.js">
@@ -22273,7 +23737,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
         <section class="saas-card afx-perm-card">
           <header class="card-header-bar"><div><h3>${esc(role)}</h3><small class="afx-muted">${perms.length} rules across ${new Set(perms.map((p) => p.doctype)).size} DocTypes</small></div></header>
           <div class="table-scroller"><table class="saas-table dense afx-perm-matrix"><thead><tr><th>Document Type</th><th>Level</th>${RIGHTS.map(([, l]) => `<th>${esc(l)}</th>`).join('')}</tr></thead>
-          <tbody>${perms.map((p) => `<tr><td><a href="#/desk/permission-manager?doctype=${encodeURIComponent(p.doctype)}">${esc(p.doctype)}</a></td><td class="numeric">${p.permlevel || 0}</td>${RIGHTS.map(([k]) => `<td class="afx-perm-cell">${p[k] ? icon('check', 13) : ''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+          <tbody>${perms.map((p) => `<tr><td><a href="#/desk/permission-manager/${encodeURIComponent(p.doctype)}">${esc(p.doctype)}</a></td><td class="numeric">${p.permlevel || 0}</td>${RIGHTS.map(([k]) => `<td class="afx-perm-cell">${p[k] ? icon('check', 13) : ''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
         </section>`;
     } else {
       const popular = ['Sales Invoice', 'Purchase Order', 'Employee', 'Leave Application', 'User', 'Journal Entry', 'Item', 'Customer'];
@@ -22282,7 +23746,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
           <div class="afx-empty-art">${icon('shield-check', 30)}</div>
           <b>Select a Document Type or Role to start</b>
           <span>Permissions are set per role and document type, then applied to every user with that role.</span>
-          <div class="afx-quick-picks">${popular.filter((p) => AFX.data.doctypes[p]).map((p) => `<a class="afx-tag is-link" href="#/desk/permission-manager?doctype=${encodeURIComponent(p)}">${esc(p)}</a>`).join('')}</div>
+          <div class="afx-quick-picks">${popular.filter((p) => AFX.data.doctypes[p]).map((p) => `<a class="afx-tag is-link" href="#/desk/permission-manager/${encodeURIComponent(p)}">${esc(p)}</a>`).join('')}</div>
         </div>`;
     }
     view.innerHTML = `
@@ -22307,7 +23771,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
 
     view.onchange = (e) => {
       const p = e.target.closest('[data-pm]');
-      if (p) { const s = store.get('pm', {}); s[p.dataset.pm] = p.value; store.set('pm', s); return AFX.go('desk/permission-manager', true); }
+      if (p) { const s = store.get('pm', {}); s[p.dataset.pm] = p.value; store.set('pm', s); return AFX.go('desk/permission-manager' + (s.doctype ? '/' + encodeURIComponent(s.doctype) : '') + (s.role ? '?role=' + encodeURIComponent(s.role) : ''), true); }
       const right = e.target.closest('[data-right]');
       if (right && dt) {
         const { rules } = rulesFor(dt);
@@ -23102,6 +24566,7 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     ['js/afx/pages/notifications.js', 'doctype_js: Notification · navbar CSS', 'Alert rules list, message preview'],
     ['js/afx/pages/email.js', 'doctype_js: Email Account', 'Accounts overview, connect wizard, status panel, composer'],
     ['js/afx/pages/errors.js', 'www/404.html · message.html', '403 / 404 / 500 / offline'],
+    ['js/afx/pages/legacy.js', 'afx1_list.css + listview_settings (Purchase Order)', 'Designed screens: tab bars, table search, column sort for every screen; Purchase Order status tabs, filter chips, Filter dialog, Sort menu, page length (filters in the URL); named order header; Trial Balance statement tabs, density, option chips; Employee record actions'],
     ['data #afx-data', '— (platform.boot + REST)', 'Real metadata exported from the site (gzip + base64). The app reads the same from platform.boot / platform.get_meta'],
   ];
 
@@ -23109,14 +24574,18 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
     ['#/', 'Website home (landing)', '/', 'bespoke: index'],
     ['#/login', 'Login, /login/forgot, /login/email-link, /login/otp, /update-password', '/login', 'pages/login.js'],
     ['#/desk', 'Apps desktop', '/desk', 'views/workspace.js'],
-    ['#/desk/<workspace>', 'Workspace (home → Executive Summary, accounting → Financial Overview)', '/desk/<workspace>', 'views/workspace.js · bespoke'],
-    ['#/desk/<doctype>', 'List view (tree view for tree DocTypes)', '/desk/<doctype>', 'views/list.js'],
-    ['#/desk/<doctype>/view/<list|report|tree|kanban|calendar|image>', 'Other list views', 'same', 'views/list.js'],
-    ['#/desk/<doctype>/new', 'New document', '/desk/<doctype>/new', 'views/form.js'],
-    ['#/desk/<doctype>/<name>', 'Document form (single DocTypes open their form directly)', 'same', 'views/form.js'],
-    ['#/desk/query-report/<Report>', 'Query / script report (Trial Balance → bespoke)', 'same', 'views/report.js'],
-    ['#/desk/dashboard-view/<Dashboard>', 'Dashboard', 'same', 'views/workspace.js'],
-    ['#/desk/permission-manager', 'Role Permissions Manager', 'same', 'pages/permissions.js'],
+    ['#/desk/<shell>/<route>', 'Every desk route, shown inside a module sidebar (“shell”): /desk/buying/purchase-order, /desk/accounts/accounting, /desk/setup/home', 'same', 'router.js (shell rule)'],
+    ['#/desk/<shell>/<workspace>', 'Workspace (home → Executive Summary, accounting → Financial Overview). A workspace named like its shell has no prefix: /desk/buying', 'same', 'views/workspace.js · bespoke'],
+    ['#/desk/<shell>/<doctype>?<field>=<value>', 'List view; filters in the URL: ?status=Open, ?grand_total=[">=",1000], ?status=["in",["A","B"]]', 'same', 'views/list.js'],
+    ['#/desk/<shell>/<doctype>/view/<report|tree|kanban|image>', 'Other list views', 'same', 'views/list.js'],
+    ['#/desk/<shell>/<doctype>/view/calendar/default', 'Calendar view (…/view/calendar gets /default)', 'same', 'views/list.js'],
+    ['#/desk/<shell>/<doctype>/new-<doctype>-<10 letters>', 'New document (…/new is renamed to a temporary name)', 'same', 'views/form.js'],
+    ['#/desk/<shell>/<doctype>/<name>', 'Document form (single DocTypes open their form directly)', 'same', 'views/form.js'],
+    ['#/desk/printing/print/<DocType>/<name>', 'Print view', 'same', 'views/form.js (print)'],
+    ['#/desk/<shell>/query-report/<Report>?<filters>', 'Query / script report; filter values in the URL (Trial Balance → bespoke)', 'same', 'views/report.js'],
+    ['#/desk/<shell>/dashboard-view/<Dashboard>', 'Dashboard', 'same', 'views/workspace.js'],
+    ['#/desk/users/permission-manager/<DocType>', 'Role Permissions Manager (?doctype= is rewritten to the path)', 'same', 'pages/permissions.js'],
+    ['#/app/… · #/desk/List/<DocType> · #/desk/Form/<DocType>/<name>', 'Older URL forms: redirected to the routes above', 'same redirects', 'router.js'],
     ['#/desk/workflow-builder', 'Workflow Builder', 'same', 'pages/workflow.js'],
     ['#/desk/settings', 'Settings hub (new)', '— new page', 'pages/settings.js'],
     ['#/desk/logs', 'Logs centre (new)', '— new page', 'pages/logs.js'],
@@ -23188,7 +24657,9 @@ S5/zmkP4KHzpF+IZ9GG6Lz9sHk+O6gGKXZXvGr7tal26fPzz0sAwh+Nbpm/m5fFSVcIsKIDqoLKLpKoy
             <li>Signed-out users opening <code>/desk/*</code> or <code>/hrms</code> are sent to <code>/login?redirect-to=…</code> and returned after sign-in.</li>
             <li>Single DocTypes (all <code>* Settings</code>) open their form; tree DocTypes (${esc((d.treeviews || []).join(', '))}) open in Tree view.</li>
             <li>Views offered per DocType: Report always; Kanban if it has a Select field; Calendar if it has a calendar config; Image if it has an image field.</li>
-            <li>The sidebar shown follows Platform’s <code>canonical_shell</code>: a DocType opens inside the module that owns it.</li>
+            <li>Shell rule (Platform v16.54 router): the shell in the URL is kept when that module lists the page or belongs to the same app; otherwise the shell on screen if it can show the page; otherwise <code>canonical_shell</code>. It is written in with <code>history.replaceState</code>. No prefix when the route starts with its own shell (<code>/desk/buying</code>) or when the shell’s slug is also a DocType (Workflow). Sidebar links carry their module’s shell.</li>
+            <li>List filters are in the URL and also remembered per user: opening a list without filters restores the last ones (Platform User Settings).</li>
+            <li>Query reports write every set filter value into the URL (checks as 1) and run again on each change.</li>
             <li>Old prototype links (<code>list.html</code>, <code>#overview</code>, …) redirect to the real routes.</li>
           </ul>
         </section>
