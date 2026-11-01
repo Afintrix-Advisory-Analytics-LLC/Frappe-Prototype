@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Afintrix starter</title>
+  <meta name="theme-color" content="#0E1340">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="afintrix-ui.css">
+  <script src="afintrix-ui.js" defer></script>
+</head>
+<body class="ax" style="margin:0">
+  <div class="ax-desk is-no-read" data-ax="desk">
+    <a class="ax-skip" href="#main">Skip to content</a>
+    <header class="ax-desk-top">
+      <button class="ax-btn is-frame is-icon is-sm ax-desk-navbtn" type="button" data-desk-nav aria-label="Open menu"><svg class="ax-i" aria-hidden="true"><use href="#ax-i-list"></use></svg></button>
+      <a class="ax-desk-brand" href="#" translate="no">Afintrix</a>
+      <span class="ax-desk-user"><span class="ax-avatar">DW</span></span>
+    </header>
+    <div class="ax-trail" data-trail aria-label="Recent actions"><span class="ax-trail-label">Trail</span><span class="ax-chip">Ready</span></div>
+    <nav class="ax-desk-nav" aria-label="Main"><a href="#" aria-current="page"><svg class="ax-i" aria-hidden="true"><use href="#ax-i-home"></use></svg>Home</a></nav>
+    <main class="ax-desk-work" id="main" tabindex="-1">
+      <div class="ax-head"><div class="ax-head-title"><h1>It works</h1><span class="ax-lamp is-ok">Ready</span></div>
+        <div class="ax-btn-row"><button class="ax-btn" type="button" data-key="ctrl+s" onclick="AxUI.say('Saved at ' + AxUI.time() + '.', { tone: 'ok', from: this })">Save <span class="ax-kbd">Ctrl S</span></button></div></div>
+      <div class="ax-panel"><div class="ax-panel-body ax-stack">
+        <p>One stylesheet, one script. Copy any component's HTML from the component library into this page. Press Ctrl S: a chip appears in the trail above.</p>
+        <div class="ax-field"><label class="ax-label" for="s-sup">Supplier<span class="ax-req">*</span></label>
+          <div class="ax-combo" data-ax="combobox" data-options='[{"value":"Meridian Supplies Ltd","hint":"Raw material"},{"value":"Nordic Components AB","hint":"Hardware"}]'><input class="ax-input" id="s-sup" placeholder="Search suppliers"></div></div>
+      </div></div>
+    </main>
+  </div>
+</body>
+</html>
